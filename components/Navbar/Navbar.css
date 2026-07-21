@@ -1,0 +1,69 @@
+:root{
+    --loginbutton-color:rgb(4, 178, 4);   
+    --buttonhover-color: rgb(2, 104, 2);
+    --navtext-color: #1F2937;
+    --textnav-color: rgb(7, 174, 7);
+} 
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.navb{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    display:flex;
+    padding:6px;
+    z-index:1000;
+    background:#fff;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+.nav-con{
+    margin-left: auto;
+    display:flex;
+    gap: 50px;
+    list-style:none;
+    align-items:center;
+    margin-right: auto;
+}
+.nav-con a{
+    position: relative;
+    text-decoration:none;
+    color: var(--navtext-color);
+    font-size: 17px;
+    font-weight:500;
+    transition:0.3s;
+}
+.nav-con a:hover{
+    color: var(--textnav-color);
+}
+.nav-con a:hover::after{
+    width: 100%;
+}
+.nav-con a::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 2px;
+    background-color: var(--loginbutton-color);
+    transition: width 0.3s ease;
+} 
+.navoptbuts{
+    display: flex;
+    margin-left: auto;
+    width: 90%;
+    align-self: center;
+}
+
+.mainlogo{
+    padding: 0;
+    margin: 0;
+}
+.mainlogo:hover{
+    cursor: pointer;
+}

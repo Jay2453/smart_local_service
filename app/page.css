@@ -1,0 +1,241 @@
+:root {
+    --manrope-font: manrope;
+    --system-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    --darpara-color: rgb(32, 32, 32);
+    --text-color: rgb(60, 59, 59);
+    --greentext-color: rgb(5, 126, 5);
+    --paragraphtext-color: rgb(107, 106, 106);
+    --customerbutton-color: rgb(3, 154, 3);
+    --workerbutton-color: rgb(145, 143, 143);
+    --border-color: rgb(216, 215, 215);
+    --masterbackground-color : rgb(250, 249, 249);
+}
+  
+.homeback {
+    position: relative;
+    width: 100%;
+    height: 570px;
+    overflow: hidden;
+    z-index: 0;
+}
+.homeback::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:40px;
+    background:linear-gradient(
+        to bottom,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,.2) 25%,
+        rgba(255,255,255,.6) 55%,
+        rgba(255,255,255,.9) 70%,
+        var(--masterbackground-color) 100%
+    );
+    pointer-events:none;
+}
+.title {
+    color: var(--text-color);
+}
+
+.spanclr,
+.title {
+    font-family: manrope;
+    font-weight: 800;
+    font-size: 40px;
+}
+
+.spanclr {
+    color: var(--greentext-color);
+}
+
+.mainbox {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 130px;
+    width: auto;
+    margin-left: 7%;
+    height: auto;
+}
+
+.para {
+    color: var(--paragraphtext-color);
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 500;
+}
+
+.para1 {
+    margin-top: 17px;
+}
+
+.para2 {
+    margin-top: 5px;
+    margin-bottom: 22px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 22px;
+    margin-top: 10px;
+}
+
+.customer-btn,
+.worker-btn {
+    width: 290px;
+    height: 95px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    cursor: pointer;
+    transition: .35s ease;
+    position: relative;
+    overflow: hidden;
+    font-family: inherit;
+}
+
+.customer-btn {
+    background: linear-gradient(135deg, #34b453, #1f9440);
+    color: white;
+    border: none;
+    box-shadow: 0 12px 30px rgba(28, 151, 65, .28);
+}
+
+.worker-btn {
+    background: white;
+    color: #1f2937;
+    border: 1.5px solid #d8d8d8;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, .08);
+}
+
+.btn-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.btn-text h3 {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.btn-text p {
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: .9;
+}
+
+.customer-btn svg,
+.worker-btn svg {
+    transition: .35s ease;
+}
+
+.customer-btn::before,
+.worker-btn::before {
+    content: "";
+    position: absolute;
+    left: -120%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .35), transparent);
+    transition: .7s;
+}
+
+.customer-btn:hover::before,
+.worker-btn:hover::before {
+    left: 120%;
+}
+
+.customer-btn:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 35px rgba(28, 151, 65, .35);
+}
+
+.worker-btn:hover {
+    transform: translateY(-6px);
+    border-color: #8e908f;
+    box-shadow: 0 18px 35px rgba(0, 0, 0, .12);
+}
+
+.customer-btn:hover svg,
+.worker-btn:hover svg {
+    transform: translateX(10px);
+}
+
+.customer-btn:active,
+.worker-btn:active {
+    transform: scale(.97);
+}
+
+.trust-section {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-top: 40px;
+}
+
+.customers {
+    display: flex;
+}
+
+.customer-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    margin-left: -15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+    transition: .35s;
+}
+
+.customer-img:first-child {
+    margin-left: 0;
+}
+
+.trust-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.trust-content p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    color: #4B5563;
+    margin-bottom: 2px;
+}
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.stars {
+    display: flex;
+    gap: 2px;
+}
+.rating span {
+    margin-top: 5px;
+    font-size: 16px;
+    color: #4B5563;
+}
+.scrollcontrol{
+    scroll-margin-top: 50px;
+}
+.page{
+    transition: filter 0.35s ease;
+}
+
+.blur{
+    filter: blur(8px);
+}
+.mainback{
+    background-color: rgb(250, 249, 249);
+}
