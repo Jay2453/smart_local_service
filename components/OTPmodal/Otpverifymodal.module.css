@@ -1,0 +1,246 @@
+:root{
+  --fontgreen-font:rgb(11, 153, 11) ;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+
+  /* blur whatever sits behind this overlay */
+  background: rgba(20, 24, 22, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px 44px 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.closeBtn {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #e4e7e5;
+  background: #ffffff;
+  color: #6b7280;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.closeBtn:hover {
+  background: #f4f6f5;
+  color: #111827;
+}
+
+.iconWrap {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #eaf6ec;
+  color: var(--fontgreen-font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 32px;
+  font-weight: 800;
+  font-family: manrope;
+  color: #16181c;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: #6b7280;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.phoneRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.phoneNumber {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--fontgreen-font);
+}
+
+.otpRow {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.otpBox {
+  width: 56px;
+  height: 64px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e5e3;
+  background: #fbfcfb;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+   font-family: manrope;
+  color: #16181c;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.otpBox:focus {
+  border-color: var(--fontgreen-font);
+  background: #f4faf5;
+  box-shadow: 0 0 0 3px rgba(62, 142, 79, 0.12);
+}
+
+.otpBoxFilled {
+  border-color: #cfe6d3;
+}
+
+.divider {
+  height: 1px;
+  background: #ecefed;
+  margin: 4px 0 20px;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  font-size: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.expiresWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #374151;
+}
+
+.expiresWrap strong {
+  color: var(--fontgreen-font);
+  font-weight: 700;
+   font-family: Arial, Helvetica, sans-serif;
+}
+
+.resendWrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.resendLabel {
+   font-family: Arial, Helvetica, sans-serif;
+  color: #6b7280;
+}
+
+.resendBtn {
+  border: none;
+  background: none;
+  color: var(--fontgreen-font);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.resendBtn:disabled {
+  color: #86C69C;
+  cursor: not-allowed;
+}
+.verifyBtn {
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #15ac31 0%, #0f9928 100%);
+  color: #ffffff;
+  font-size: 17.5px;
+  font-weight: 700;
+  display: flex;
+  font-family: manrope;
+  letter-spacing: 3%;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.05s ease;
+  margin-bottom: 20px;
+}
+
+.verifyBtn:not(:disabled):hover {
+  filter: brightness(1.05);
+}
+
+.verifyBtn:not(:disabled):active {
+  transform: scale(0.99);
+}
+
+.verifyBtn:disabled {
+  background: #A7DDB7;
+color: #FFFFFF;
+  cursor: not-allowed;
+}
+
+.secureRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 32px 20px 24px;
+  }
+
+  .otpRow {
+    gap: 8px;
+  }
+
+  .otpBox {
+    width: 44px;
+    height: 56px;
+    font-size: 20px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+}

@@ -70,7 +70,7 @@ export default function Login({ closeLogin }) {
 
         <p className="signup-text">
           Don't have an account?
-          <button className="signup-link">
+          <button className="signup-link" onClick={()=>window.open('/Register','_blank')}>
             Create one
           </button>
         </p>

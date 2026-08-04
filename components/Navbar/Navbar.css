@@ -4,7 +4,7 @@
     --navtext-color: #1F2937;
     --textnav-color: rgb(7, 174, 7);
 } 
-*{
+*{ 
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -19,15 +19,14 @@
     padding:6px;
     z-index:1000;
     background:#fff;
-    box-shadow:0 4px 12px rgba(0,0,0,.15);
+    box-shadow:0 4px 12px rgba(18, 18, 18, 0.15);
 }
 .nav-con{
-    margin-left: auto;
+    margin-left: 23%;
+    display: flex;
     display:flex;
     gap: 50px;
     list-style:none;
-    align-items:center;
-    margin-right: auto;
 }
 .nav-con a{
     position: relative;
