@@ -1,0 +1,540 @@
+/* ===== Design tokens ===== */
+.page {
+  --green: #1e9e5a;
+  --green-bg: #f0faf4;
+  --green-bg-soft: #f3fbf6;
+  --green-tag-bg: #eaf7ef;
+  --border: #e4e4e7;
+  --border-soft: #eeeeec;
+  --divider: #f0f0ee;
+  --text: #18181b;
+  --text-muted: #71717a;
+  --text-faint: #a1a1aa;
+  --text-sub: #52525b;
+  margin-top: 4%;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #fafaf9;
+  padding: 24px;
+  color: var(--text);
+}
+
+.greenIcon {
+  color: var(--green);
+}
+
+/* ===== Layout ===== */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 24px;
+  max-width: 1350px;
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle {
+  margin-top: 6px;
+  margin-bottom: 28px;
+  color: var(--text-muted);
+  font-size: 14.5px;
+}
+
+.sectionLabel {
+  font-size: 15.5px;
+  font-weight: 700;
+}
+
+.sectionSpacer {
+  margin-top: 28px;
+}
+
+/* ===== Address ===== */
+.addressBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 16px;
+  margin-top: 10px;
+}
+
+.addressInput {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14.5px;
+  font-family: inherit;
+  color: var(--text);
+  background: transparent;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  cursor: pointer;
+  font-size: 14.5px;
+  font-weight: 500;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+
+/* ===== Service grid ===== */
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 12px;
+}
+
+@media (max-width: 640px) {
+  .serviceGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.serviceCard {
+  border: 1px solid var(--border);
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+  font-family: inherit;
+}
+
+.serviceCardSelected {
+  border: 2px solid var(--green);
+  background: var(--green-bg-soft);
+}
+
+.serviceIconWrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.serviceName {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* ===== Describe section ===== */
+.describeSection {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.describeHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.linkBtn {
+  background: none;
+  border: none;
+  color: var(--green);
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+.emptyHint {
+  margin-top: 14px;
+  color: var(--text-faint);
+  font-size: 14px;
+}
+
+.pillRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.pill {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: #3f3f46;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pillActive {
+  border: 1px solid var(--green);
+  background: var(--green);
+  color: #ffffff;
+}
+
+.problemBlock {
+  margin-top: 18px;
+}
+
+.fieldLabel {
+  font-size: 14.5px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.optionalLabel {
+  color: var(--text-faint);
+  font-weight: 400;
+}
+
+.fieldBlock {
+  margin-top: 22px;
+}
+
+.textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14.5px;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.charCount {
+  text-align: right;
+  font-size: 12.5px;
+  color: var(--text-faint);
+  margin-top: 4px;
+}
+
+/* ===== Photos ===== */
+.photoRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.uploadTile {
+  width: 170px;
+  height: 120px;
+  border: 1px dashed #d4d4d8;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-align: center;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.uploadTitle {
+  font-weight: 600;
+  color: #3f3f46;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.photoThumb {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  background: #e4e4e7;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photoLabel {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 6px;
+  text-align: center;
+}
+
+.photoRemoveBtn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.addPhotoBtn {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  border: 1px dashed #d4d4d8;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-faint);
+}
+
+/* ===== Submit ===== */
+.submitBtn {
+  width: 100%;
+  margin-top: 32px;
+  background: var(--green);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.submitBtn:disabled {
+  background: #a7d9bc;
+  cursor: not-allowed;
+}
+
+/* ===== Summary card ===== */
+.summaryCard {
+  background: #ffffff;
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  padding: 26px;
+  align-self: start;
+  top: 24px;
+}
+
+.summaryHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--green-bg);
+  margin: -26px -26px 20px -26px;
+  padding: 18px 26px;
+  border-radius: 16px 16px 0 0;
+}
+
+.summaryHeaderTitle {
+  font-weight: 700;
+  font-size: 16.5px;
+}
+
+.summaryCount {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+
+.summaryItem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.summaryItemLeft {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.summaryIconWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.summaryItemName {
+  font-weight: 600;
+  font-size: 14.5px;
+}
+
+.tag {
+  display: inline-block;
+  margin-top: 6px;
+  background: var(--green-tag-bg);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+
+.summaryItemRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.summaryItemPrice {
+  font-weight: 700;
+  font-size: 14.5px;
+}
+
+.iconBtn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-faint);
+  display: flex;
+}
+
+.divider {
+  border-top: 1px solid var(--divider);
+  margin: 16px 0;
+}
+
+.summaryRowHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.summaryRowTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 14.5px;
+}
+
+.summaryRowBody {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.summaryRowSpacer {
+  opacity: 0;
+  width: 16px;
+}
+
+.addressText {
+  font-size: 13.5px;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+.dateTimeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--text-sub);
+  margin-bottom: 6px;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.totalLabel {
+  font-weight: 700;
+  font-size: 15.5px;
+}
+
+.totalValue {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.secureBox {
+  display: flex;
+  gap: 12px;
+  background: var(--green-bg);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 18px;
+}
+
+.secureTitle {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.secureText {
+  font-size: 12.5px;
+  color: var(--text-sub);
+  margin-top: 2px;
+  line-height: 1.5;
+}
+
+.changeDateBtn {
+  width: 100%;
+  margin-top: 18px;
+  background: #ffffff;
+  border: 1px solid var(--green);
+  color: var(--green);
+  border-radius: 12px;
+  padding: 13px 0;
+  font-weight: 700;
+  font-size: 14.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
