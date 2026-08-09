@@ -145,8 +145,6 @@ export default function BookService() {
   const [problemChoice, setProblemChoice] = useState({});
   const [description, setDescription] = useState("");
   const [photos, setPhotos] = useState([
-    { id: "p1", label: "Pipe under sink" },
-    { id: "p2", label: "Wall pipe" },
   ]);
   const fileInputRef = useRef(null);
 
