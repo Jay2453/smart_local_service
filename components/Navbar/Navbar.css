@@ -3,7 +3,7 @@
     --buttonhover-color: rgb(2, 104, 2);
     --navtext-color: #1F2937;
     --textnav-color: rgb(7, 174, 7);
-} 
+}  
 *{ 
     margin: 0;
     padding: 0;
@@ -65,4 +65,70 @@
 }
 .mainlogo:hover{
     cursor: pointer;
+}
+.profile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 40px;
+  height: 40px;
+  margin-top: 3px;
+  margin-right: 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.profile::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  border: 1.2px solid #d1d2d1;
+  border-radius: 999px;
+  z-index: -1;
+  transition: width 0.3s ease, border-color 0.25s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(22, 163, 74, 0.06);
+}
+
+.profile_logo {
+  position: absolute;
+  top: 1;
+  right: 1;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  z-index: 2;
+}
+
+.profile_name {
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%) translateX(8px);
+  font-size: 14px;
+  font-weight: 600;
+  color: #797a7b;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.3s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.profile:hover::before {
+  width: 135px;
+  border-color: rgba(22, 163, 74, 0.25);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05), 0 12px 30px rgba(22, 163, 74, 0.10);
+}
+
+.profile:hover .profile_name {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
 }

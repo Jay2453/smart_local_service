@@ -6,7 +6,7 @@ import './Navbar.css';
 import Image from 'next/image';
 
 const Navbar = () => {
-  
+
   return (
 
     <div className='navb'>
@@ -29,7 +29,16 @@ const Navbar = () => {
           <li><Link rel="" href="/Customer">Dashboard</Link></li>
           <li><Link rel="" href="">Booking History</Link></li>
         </ul>
-
+      </div>
+      <div className="profile">
+        <span className="profile_name">Guest</span>
+        <Image
+          className="profile_logo"
+          src="/images/profileLogo.jpg"
+          alt="Guest profile"
+          width={40}
+          height={40}
+        />
       </div>
     </div>
   )

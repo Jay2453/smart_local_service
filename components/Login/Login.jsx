@@ -17,7 +17,7 @@ export default function Login({ closeLogin }) {
         </button>
 
         <div className="login-header">
-          <h1>Sign <span className="signcolor">in</span></h1>
+          <h1>Log<span className="signcolor">in</span></h1>
           <p>Access your SmartServe account.</p>
         </div>
 
@@ -56,7 +56,7 @@ export default function Login({ closeLogin }) {
             type="submit"
             className="login-btn"
           >
-            Sign in
+          Login
           </button>
         </form>
 
