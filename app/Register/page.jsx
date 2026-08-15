@@ -27,7 +27,7 @@ import { FaApple } from 'react-icons/fa';
 import Navbar from '@/components/Navbar/Navbar';
 
 const Register = () => {
-  const [isWorker, setIsWorker] = useState(false);
+  const [IsServiceprovider, setIsServiceprovider] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [workerDetailsOpen, setWorkerDetailsOpen] = useState(true);
@@ -43,9 +43,10 @@ const Register = () => {
           phoneNumber='+91 98567 78903'
           onClose={() => setShowoverlay(false)}
           onVerify={(otp) => console.log('Verifying', otp)}
+          IsServiceprovider={IsServiceprovider}
           onResend={() => console.log('resent OTP')}
         />
-      }
+      } 
 
       {/* Registeration Model */}
       <div className="masterregister">
@@ -136,11 +137,11 @@ const Register = () => {
             <label className="worker-checkbox">
               <input
                 type="checkbox"
-                checked={isWorker}
-                onChange={() => setIsWorker(!isWorker)}
+                checked={IsServiceprovider}
+                onChange={() => setIsServiceprovider(!IsServiceprovider)}
               />
               <span className="custom-checkbox">
-                {isWorker && <FiCheckCircle className="check-icon" />}
+                {IsServiceprovider && <FiCheckCircle className="check-icon" />}
               </span>
               <div className="checkbox-text">
                 <p className="checkbox-title">I am a service provider / worker</p>
@@ -218,7 +219,7 @@ const Register = () => {
           </div>
 
           {/* RIGHT COLUMN */}
-          {isWorker && (
+          {IsServiceprovider && (
             <div className="worker-sidebar">
               <button
                 type="button"
