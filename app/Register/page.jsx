@@ -34,7 +34,6 @@ const Register = () => {
     email: "",
     password: "",
     confirmpassword: "",
-    role: "",
     address: "",
     city: "",
     pincode: "",
@@ -52,21 +51,108 @@ const Register = () => {
       [name]: value,
     }));
   };
-  const handleContinue = () => {
-    if (FormData.password === "") {
+  const handleOTPVerify = async (otp) => {
+    try {
+      const response = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phone: FormData.phone,
+          otp: otp,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message);
+        return;
+      }
+
+      console.log("OTP verified successfully");
+
+      await handleRegistration();
+
+    } catch (error) {
+      console.error("OTP verification error:", error);
+      alert("Could not verify OTP.");
+    }
+  };
+  const handleResend = async () => {
+    try {
+      const response = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phone: FormData.phone,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message);
+        return;
+      }
+
+      console.log("New OTP generated");
+
+    } catch (error) {
+      console.error("RESEND OTP ERROR:", error);
+    }
+  };
+  const handleContinue = async () => {
+    if (!FormData.password) {
       alert("Please enter a password.");
       return;
     }
-    if (FormData.confirmpassword === "") {
+
+    if (!FormData.confirmpassword) {
       alert("Please confirm your password.");
       return;
     }
+
     if (FormData.password !== FormData.confirmpassword) {
-      alert("Please re-enter the password, Both passwords does not match.");
+      alert("Passwords do not match.");
       return;
     }
-    setShowoverlay(true);
-  }
+
+    if (!FormData.phone) {
+      alert("Please enter your phone number.");
+      return;
+    }
+
+    try {
+      console.log("Sending the OTP request...");
+      const response = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phone: FormData.phone,
+        }),
+      });
+
+      const data = await response.json();
+      console.log("OTP API response: ", data);
+
+      if (!response.ok) {
+        alert(data.message);
+        return;
+      }
+
+      setShowoverlay(true);
+
+    } catch (error) {
+      console.error("OTP ERROR:", error);
+      alert("Could not generate OTP.");
+    }
+  };
   const handleRegistration = async () => {
     try {
       const response = await fetch("/api/auth/register", {
@@ -83,6 +169,7 @@ const Register = () => {
           address: FormData.address,
           city: FormData.city,
           pincode: FormData.pincode,
+          state: FormData.state,
         }),
       });
 
@@ -91,8 +178,14 @@ const Register = () => {
         alert(data.message);
         return;
       }
-      console.log("Registeration successful: ", data);
-      alert("Registeration successfull!");
+
+      console.log("Registration successful:", data);
+
+      if (IsServiceprovider) {
+        window.location.href = "/Register/Verify_docs";
+      } else {
+        window.location.href = "/Dashboard";
+      }
 
     } catch (error) {
       console.error("Registeration failed: ", error);
@@ -110,9 +203,9 @@ const Register = () => {
         <OtpVerifyModal
           phoneNumber={`+91 ${FormData.phone}`}
           onClose={() => setShowoverlay(false)}
-          onVerify={(otp) => console.log('Verifying', otp)}
+          onVerify={handleOTPVerify}
           IsServiceprovider={IsServiceprovider}
-          onResend={() => console.log('resent OTP')}
+          onResend={handleResend}
         />
       }
 
@@ -252,8 +345,12 @@ const Register = () => {
                   <label>State</label>
                   <div className="input-wrapper">
                     <FiMapPin className="input-icon" />
-                    <select defaultValue="Gujarat">
-                      <option>Gujarat</option>
+                    <select
+                      name="state"
+                      value={FormData.state}
+                      onChange={handleChange}
+                    >
+                      <option value="Gujarat">Gujarat</option>
                     </select>
                   </div>
                 </div>

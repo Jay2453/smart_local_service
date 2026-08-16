@@ -5,11 +5,11 @@ const OTP_LENGTH = 6;
 const RESEND_SECONDS = 45;
 
 export default function OtpVerifyModal({
-    phoneNumber,
-    onClose,
-    onVerify,
-    IsServiceprovider,
-    onResend
+  phoneNumber,
+  onClose,
+  onVerify,
+  IsServiceprovider,
+  onResend
 }) {
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
@@ -148,15 +148,11 @@ export default function OtpVerifyModal({
           </div>
         </div>
 
-        <button className={styles.verifyBtn} onClick={async () => {
-
-          if (IsServiceprovider) {
-            window.open('/Register/Verify_docs', '_blank');
-          } else {
-            window.open('/Dashboard', '_blank');
-          }
-        }}
-          disabled={!isComplete} >
+        <button
+          className={styles.verifyBtn}
+          onClick={handleVerify}
+          disabled={!isComplete}
+        >
           Verify OTP <ArrowIcon />
         </button>
 

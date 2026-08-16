@@ -1,25 +1,42 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import connectDB from "@/lib/mongodb";
-import { User } from "@/models/User";
+import User from "@/models/User";
 
 export async function POST(request) {
     try {
         const {
             name,
-            email,
             phone,
+            email,
             password,
             role,
-        } = await request.json;
-        if (!name || !email || !phone || !passowrd || !role) {
-            return NextResponse.json({
-                success: false,
-                message: "All fields are required",
-            },
+            address,
+            city,
+            state,
+            pincode,
+        } = await request.json();
+
+        if (
+            !name ||
+            !email ||
+            !phone ||
+            !password ||
+            !city ||
+            !state ||
+            !address ||
+            !pincode ||
+            !role
+        ) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "All fields are required",
+                },
                 { status: 400 }
             );
         }
+
         if (!["customer", "serviceprovider"].includes(role)) {
             return NextResponse.json(
                 {
@@ -31,6 +48,7 @@ export async function POST(request) {
         }
 
         await connectDB();
+
         const existingUser = await User.findOne({
             email: email.toLowerCase(),
         });
@@ -44,15 +62,21 @@ export async function POST(request) {
                 { status: 409 }
             );
         }
+
         const hashedPassword = await bcrypt.hash(password, 12);
 
         const user = await User.create({
             name,
-            email: email.toLowerCase(),
             phone,
+            email: email.toLowerCase(),
             password: hashedPassword,
             role,
+            address,
+            city,
+            state,
+            pincode,
         });
+
         return NextResponse.json(
             {
                 success: true,
@@ -68,15 +92,14 @@ export async function POST(request) {
         );
 
     } catch (error) {
-        console.error("Registeration error : ", error);
+        console.error("Registration error:", error);
+
         return NextResponse.json(
             {
-                sucess: false,
+                success: false,
                 message: "Something went wrong",
             },
-            {
-                status: 500
-            }
+            { status: 500 }
         );
     }
-} 
+}
