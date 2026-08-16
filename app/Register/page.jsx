@@ -25,13 +25,81 @@ import {
 import { FcGoogle } from 'react-icons/fc';
 import { FaApple } from 'react-icons/fa';
 import Navbar from '@/components/Navbar/Navbar';
+import { Form, Hand } from 'lucide-react';
 
 const Register = () => {
+  const [FormData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    password: "",
+    confirmpassword: "",
+    role: "",
+    address: "",
+    city: "",
+    pincode: "",
+    state: "Gujarat",
+  });
   const [IsServiceprovider, setIsServiceprovider] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [workerDetailsOpen, setWorkerDetailsOpen] = useState(true);
   const [Showoverlay, setShowoverlay] = useState(false);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const handleContinue = () => {
+    if (FormData.password === "") {
+      alert("Please enter a password.");
+      return;
+    }
+    if (FormData.confirmpassword === "") {
+      alert("Please confirm your password.");
+      return;
+    }
+    if (FormData.password !== FormData.confirmpassword) {
+      alert("Please re-enter the password, Both passwords does not match.");
+      return;
+    }
+    setShowoverlay(true);
+  }
+  const handleRegistration = async () => {
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: FormData.name,
+          phone: FormData.phone,
+          email: FormData.email,
+          password: FormData.password,
+          role: IsServiceprovider ? "serviceprovider" : "customer",
+          address: FormData.address,
+          city: FormData.city,
+          pincode: FormData.pincode,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        alert(data.message);
+        return;
+      }
+      console.log("Registeration successful: ", data);
+      alert("Registeration successfull!");
+
+    } catch (error) {
+      console.error("Registeration failed: ", error);
+      alert("Something went wrong. ");
+    }
+  };
+
   return (
     <div>
 
@@ -40,13 +108,13 @@ const Register = () => {
       {/* OTP verification module */}
       {Showoverlay &&
         <OtpVerifyModal
-          phoneNumber='+91 98567 78903'
+          phoneNumber={`+91 ${FormData.phone}`}
           onClose={() => setShowoverlay(false)}
           onVerify={(otp) => console.log('Verifying', otp)}
           IsServiceprovider={IsServiceprovider}
           onResend={() => console.log('resent OTP')}
         />
-      } 
+      }
 
       {/* Registeration Model */}
       <div className="masterregister">
@@ -68,15 +136,7 @@ const Register = () => {
                   <label>Full Name</label>
                   <div className="input-wrapper">
                     <FiUser className="input-icon" />
-                    <input type="text" placeholder="username" />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>Date of Birth</label>
-                  <div className="input-wrapper">
-                    <FiCalendar className="input-icon" />
-                    <input type="date" />
+                    <input type="text" placeholder="username" name="name" value={FormData.name} onChange={handleChange} />
                   </div>
                 </div>
 
@@ -86,7 +146,7 @@ const Register = () => {
                     <FiPhone className="input-icon" />
                     <span className="country-code">+91</span>
                     <span className="divider-line" />
-                    <input type="tel" />
+                    <input type="tel" name="phone" onChange={handleChange} value={FormData.phone} />
                   </div>
                 </div>
 
@@ -94,7 +154,7 @@ const Register = () => {
                   <label>Email Address</label>
                   <div className="input-wrapper">
                     <FiMail className="input-icon" />
-                    <input type="email" placeholder="user@gmail.com" />
+                    <input type="email" placeholder="user@gmail.com" onChange={handleChange} value={FormData.email} name="email" />
                   </div>
                 </div>
 
@@ -102,7 +162,7 @@ const Register = () => {
                   <label>Create Password</label>
                   <div className="input-wrapper">
                     <FiLock className="input-icon" />
-                    <input type={showPassword ? 'text' : 'password'} />
+                    <input type={showPassword ? 'text' : 'password'} name='password' value={FormData.password} onChange={handleChange} />
                     <button
                       type="button"
                       className="eye-btn"
@@ -118,8 +178,10 @@ const Register = () => {
                   <div className="input-wrapper">
                     <FiLock className="input-icon" />
                     <input
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      defaultValue=""
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="confirmpassword"
+                      value={FormData.confirmpassword}
+                      onChange={handleChange}
                     />
                     <button
                       type="button"
@@ -162,7 +224,13 @@ const Register = () => {
                   <label>House / Building / Street</label>
                   <div className="input-wrapper">
                     <FiHome className="input-icon" />
-                    <input type="text" placeholder="12, Shanti Nagar, Near Sardar Patel Chowk" />
+                    <input
+                      type="text"
+                      name="address"
+                      placeholder="12, Shanti Nagar, Near Sardar Patel Chowk"
+                      value={FormData.address}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
 
@@ -170,7 +238,13 @@ const Register = () => {
                   <label>City</label>
                   <div className="input-wrapper">
                     <FiHome className="input-icon" />
-                    <input type="text" placeholder="Morbi" />
+                    <input
+                      type="text"
+                      name="city"
+                      placeholder="Morbi"
+                      value={FormData.city}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
 
@@ -188,13 +262,19 @@ const Register = () => {
                   <label>PIN Code</label>
                   <div className="input-wrapper">
                     <FiMapPin className="input-icon" />
-                    <input type="text" placeholder="6-Digit pincode" />
+                    <input
+                      type="text"
+                      name="pincode"
+                      placeholder="6-Digit pincode"
+                      value={FormData.pincode}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
               </div>
             </div>
 
-            <button type="button" className="continue-btn" onClick={() => setShowoverlay(true)}>
+            <button type="button" className="continue-btn" onClick={handleContinue}>
               Continue <FiArrowRight />
             </button>
 
