@@ -1,0 +1,77 @@
+ .banner {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 9999;
+    min-width: 320px;
+    max-width: 450px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.3s ease;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.content span {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.content button {
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.error {
+    background: #fff1f1;
+    border: 1px solid #ffcccc;
+    color: #b42318;
+}
+
+.error .icon {
+    background: #b42318;
+    color: white;
+}
+
+.success {
+    background: #effcf3;
+    border: 1px solid #b7ebc6;
+    color: #187a3d;
+}
+
+.success .icon {
+    background: #187a3d;
+    color: white;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

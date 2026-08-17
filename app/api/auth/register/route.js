@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
-
 export async function POST(request) {
     try {
         const {
@@ -50,8 +49,11 @@ export async function POST(request) {
         await connectDB();
 
         const existingUser = await User.findOne({
-            email: email.toLowerCase(),
-        });
+    $or: [
+        { email: email.toLowerCase() },
+        { phone: phone }
+    ]
+});
 
         if (existingUser) {
             return NextResponse.json(
@@ -91,9 +93,8 @@ export async function POST(request) {
             { status: 201 }
         );
 
-    } catch (error) {
+    } catch (error){
         console.error("Registration error:", error);
-
         return NextResponse.json(
             {
                 success: false,

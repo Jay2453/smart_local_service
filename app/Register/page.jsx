@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import OtpVerifyModal from '../../components/OTPmodal/Otpverifymodal';
+import NotificationBanner from '../../components/NotificationBanner/NotificationBanner';
 import './register.css';
 import {
   FiUser,
@@ -44,6 +45,18 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [workerDetailsOpen, setWorkerDetailsOpen] = useState(true);
   const [Showoverlay, setShowoverlay] = useState(false);
+  const [Notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "error",
+  });
+  const showNotification = (message, type = "error") => {
+    setNotification({
+      show: true,
+      message,
+      type,
+    });
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -67,7 +80,7 @@ const Register = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.message);
+        showNotification(data.message);
         return;
       }
 
@@ -77,7 +90,7 @@ const Register = () => {
 
     } catch (error) {
       console.error("OTP verification error:", error);
-      alert("Could not verify OTP.");
+      showNotification("Could not verify OTP.");
     }
   };
   const handleResend = async () => {
@@ -95,7 +108,7 @@ const Register = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.message);
+        showNotification(data.message);
         return;
       }
 
@@ -105,54 +118,84 @@ const Register = () => {
       console.error("RESEND OTP ERROR:", error);
     }
   };
+
   const handleContinue = async () => {
-    if (!FormData.password) {
-      alert("Please enter a password.");
-      return;
+    // Check form fields
+    if (
+        !FormData.name ||
+        !FormData.phone ||
+        !FormData.email ||
+        !FormData.password ||
+        !FormData.confirmpassword ||
+        !FormData.address ||
+        !FormData.city ||
+        !FormData.state ||
+        !FormData.pincode
+    ) {
+        showNotification("Please fill in all the required fields.");
+        return;
     }
 
-    if (!FormData.confirmpassword) {
-      alert("Please confirm your password.");
-      return;
-    }
-
+    // Check passwords
     if (FormData.password !== FormData.confirmpassword) {
-      alert("Passwords do not match.");
-      return;
-    }
-
-    if (!FormData.phone) {
-      alert("Please enter your phone number.");
-      return;
+        showNotification("Passwords do not match.");
+        return;
     }
 
     try {
-      console.log("Sending the OTP request...");
-      const response = await fetch("/api/auth/send-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          phone: FormData.phone,
-        }),
-      });
 
-      const data = await response.json();
-      console.log("OTP API response: ", data);
+        // Check email and phone in database
+        const checkResponse = await fetch(
+            "/api/auth/check-registration",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: FormData.email,
+                    phone: FormData.phone,
+                }),
+            }
+        );
 
-      if (!response.ok) {
-        alert(data.message);
-        return;
-      }
+        const checkData = await checkResponse.json();
 
-      setShowoverlay(true);
+        if (!checkResponse.ok) {
+            showNotification(checkData.message);
+            return;
+        }
+
+        // Only now generate OTP
+        const otpResponse = await fetch(
+            "/api/auth/send-otp",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    phone: FormData.phone,
+                }),
+            }
+        );
+
+        const otpData = await otpResponse.json();
+
+        if (!otpResponse.ok) {
+            showNotification(otpData.message);
+            return;
+        }
+
+        // Open OTP modal
+        setShowoverlay(true);
 
     } catch (error) {
-      console.error("OTP ERROR:", error);
-      alert("Could not generate OTP.");
+        console.error("Continue error:", error);
+        showNotification("Something went wrong. Please try again.");
     }
-  };
+};
+
   const handleRegistration = async () => {
     try {
       const response = await fetch("/api/auth/register", {
@@ -175,7 +218,7 @@ const Register = () => {
 
       const data = await response.json();
       if (!response.ok) {
-        alert(data.message);
+        showNotification(data.message);
         return;
       }
 
@@ -189,12 +232,26 @@ const Register = () => {
 
     } catch (error) {
       console.error("Registeration failed: ", error);
-      alert("Something went wrong. ");
+      showNotification("Something went wrong. ");
     }
   };
 
+  //////////////////////////////////////////////////
+
   return (
     <div>
+
+      {Notification.show && (
+        <NotificationBanner message={Notification.message}
+        type={Notification.type}
+        onClose={()=>
+          setNotification({
+            show: false,
+            message: "",
+            type: "error",
+          })
+        }/>
+      )}
 
       <Navbar />
 
