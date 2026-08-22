@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
+import Provider from "@/models/Provider";
+
+// Verify user if customer, else verify serviceProvider...
 
 export async function POST(request) {
     try {
