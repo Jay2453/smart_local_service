@@ -39,6 +39,9 @@ const Register = () => {
     city: "",
     pincode: "",
     state: "Gujarat",
+    Profession: "",
+    Experience: "",
+    ServiceRadius: "",
   });
   const [IsServiceprovider, setIsServiceprovider] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -135,6 +138,11 @@ const Register = () => {
         showNotification("Please fill in all the required fields.");
         return;
     }
+    if (IsServiceprovider && (!FormData.ServiceRadius || !FormData.Profession || !FormData.Experience))
+    {
+      showNotification("Please fill in the required Service Provider Fields.");
+      return;      
+    }
 
     // Check passwords
     if (FormData.password !== FormData.confirmpassword) {
@@ -213,6 +221,9 @@ const Register = () => {
           city: FormData.city,
           pincode: FormData.pincode,
           state: FormData.state,
+          Proffesion: FormData.Profession,
+          Experience: FormData.Experience,
+          ServiceRadius: FormData.ServiceRadius,
         }),
       });
 
@@ -480,13 +491,13 @@ const Register = () => {
                     </label>
                     <div className="input-wrapper">
                       <span className="input-emoji">🛠️</span>
-                      <select defaultValue="Carpentry">
-                        <option>Plumbing</option>
-                        <option>Electrical</option>
-                        <option>Carpentry</option>
-                        <option>Painting</option>
-                        <option>Pest Control</option>
-                        <option>Appliance Repair</option>
+                      <select value={FormData.Profession} name='Profession' onChange={handleChange}>
+                        <option value="Plumbing">Plumbing</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Carpentry">Carpentry</option>
+                        <option value="Painting">Painting</option>
+                        <option value="Pest control">Pest Control</option>
+                        <option value="ApplianceRepair">Appliance Repair</option>
                       </select>
                     </div>
                   </div>
@@ -497,11 +508,11 @@ const Register = () => {
                     </label>
                     <div className="input-wrapper">
                       <FiStar className="input-icon" />
-                      <select defaultValue="3+ Years">
-                        <option>Less than 1 Year</option>
-                        <option>1-3 Years</option>
-                        <option>3+ Years</option>
-                        <option>5+ Years</option>
+                      <select value={FormData.Experience} name='Experience' onChange={handleChange}>
+                        <option value="0-1">Less than 1 Year</option>
+                        <option value="1-3">1-3 Years</option>
+                        <option value="3-5">3-5 Years</option>
+                        <option value="5+">5+ Years</option>
                       </select>
                     </div>
                   </div>
@@ -512,11 +523,11 @@ const Register = () => {
                     </label>
                     <div className="input-wrapper">
                       <FiTarget className="input-icon" />
-                      <select defaultValue="Within 15 km">
-                        <option>Within 5 km</option>
-                        <option>Within 10 km</option>
-                        <option>Within 15 km</option>
-                        <option>Within 25 km</option>
+                      <select value={FormData.ServiceRadius} name='ServiceRadius' onChange={handleChange}>
+                        <option value="in 5km">Within 5 km</option>
+                        <option value="in 10km">Within 10 km</option>
+                        <option value="in 15km">Within 15 km</option>
+                        <option value="in 25km">Within 25 km</option>
                       </select>
                     </div>
                     <p className="hint-text">Within how many km you provide service</p>

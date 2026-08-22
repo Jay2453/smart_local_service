@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
+import Provider from "@/models/Provider";
 export async function POST(request) {
     try {
         const {
@@ -14,6 +15,9 @@ export async function POST(request) {
             city,
             state,
             pincode,
+            Proffesion,
+            Experience,
+            ServiceRadius,
         } = await request.json();
 
         if (
@@ -49,11 +53,11 @@ export async function POST(request) {
         await connectDB();
 
         const existingUser = await User.findOne({
-    $or: [
-        { email: email.toLowerCase() },
-        { phone: phone }
-    ]
-});
+            $or: [
+                { email: email.toLowerCase() },
+                { phone: phone }
+            ]
+        });
 
         if (existingUser) {
             return NextResponse.json(
@@ -67,33 +71,51 @@ export async function POST(request) {
 
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        const user = await User.create({
-            name,
-            phone,
-            email: email.toLowerCase(),
-            password: hashedPassword,
-            role,
-            address,
-            city,
-            state,
-            pincode,
-        });
+        if (role == "serviceprovider") {
+            const provider = await Provider.create({
+                name,
+                phone,
+                email: email.toLowerCase(),
+                password: hashedPassword,
+                role,
+                address,
+                city,
+                state,
+                pincode,
+                Proffesion,
+                Experience,
+                ServiceRadius,
+            });
+        }
+        else {
+            const user = await User.create({
+                name,
+                phone,
+                email: email.toLowerCase(),
+                password: hashedPassword,
+                role,
+                address,
+                city,
+                state,
+                pincode,
+            });
+        }
 
         return NextResponse.json(
             {
                 success: true,
                 message: "Registration successful",
                 user: {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
+                    id: User._id,
+                    name: User.name,
+                    email: User.email,
+                    role: User.role,
                 },
             },
             { status: 201 }
         );
 
-    } catch (error){
+    } catch (error) {
         console.error("Registration error:", error);
         return NextResponse.json(
             {
