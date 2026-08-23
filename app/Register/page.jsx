@@ -5,7 +5,6 @@ import NotificationBanner from '../../components/NotificationBanner/Notification
 import './register.css';
 import {
   FiUser,
-  FiCalendar,
   FiPhone,
   FiMail,
   FiLock,
@@ -16,17 +15,13 @@ import {
   FiArrowRight,
   FiBriefcase,
   FiStar,
-  FiList,
   FiTarget,
   FiChevronUp,
   FiChevronDown,
-  FiX,
   FiCheckCircle,
 } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { FaApple } from 'react-icons/fa';
-import Navbar from '@/components/Navbar/Navbar';
-import { Form, Hand } from 'lucide-react';
 
 const Register = () => {
   const [FormData, setFormData] = useState({
@@ -263,8 +258,6 @@ const Register = () => {
           })
         }/>
       )}
-
-      <Navbar />
 
       {/* OTP verification module */}
       {Showoverlay &&

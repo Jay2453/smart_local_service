@@ -12,6 +12,7 @@
     "@lordicon/react": "^1.11.0",
     "bcryptjs": "^3.0.3",
     "framer-motion": "^12.42.2",
+    "jose": "^6.2.10",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.23.0",
     "mongoose": "^9.9.2",

@@ -1,6 +1,5 @@
 "use client";
 import "./VerificationModule.css";
-import Navbar from '../../../components/Navbar/Navbar';
 import { Geist } from "next/font/google";
 import {
   ShieldCheck,
@@ -20,7 +19,6 @@ const geist = Geist({
 export default function Page() {
   return (
     <div className={geist.className}>
-      <Navbar/>
       <div className="verification-page">
         <div className="verification-container">
 

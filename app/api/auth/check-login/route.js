@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { createSession } from "@/lib/auth";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
 import Provider from "@/models/Provider";
@@ -55,7 +56,6 @@ export async function POST(request) {
             role = "customer";
         }
 
-        // Compare entered password with hashed password
         const passwordMatch = await bcrypt.compare(
             password,
             account.password
@@ -71,7 +71,15 @@ export async function POST(request) {
             );
         }
 
-        return NextResponse.json(
+        // Create login session
+        const token = await createSession({
+            id: account._id,
+            name: account.name,
+            phone: account.phone,
+            role,
+        });
+
+        const response = NextResponse.json(
             {
                 success: true,
                 message: "Login successful",
@@ -85,6 +93,18 @@ export async function POST(request) {
             },
             { status: 200 }
         );
+
+        response.cookies.set({
+            name: "smartserve_session",
+            value: token,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 60 * 60 * 24 * 7,
+            path: "/",
+        });
+
+        return response;
 
     } catch (error) {
         console.error("Login error:", error);

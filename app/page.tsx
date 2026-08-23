@@ -1,82 +1,85 @@
 "use client";
-import { useState } from 'react';
-import './page.css';
-import React from 'react';
-import Image from 'next/image';
+import { useState } from "react";
+import "./page.css";
+import Image from "next/image";
 import {
-  ArrowRight, Star, Search,
-  MapPin,
-  Grid2x2,
-  ChevronDown,
-  Wrench,
-  Zap,
-  Hammer,
-  Paintbrush,
-  Refrigerator,
-  ShieldCheck
-} from 'lucide-react';
-import About from '@/app/About/page';
-import Service from '@/app/Services/page';
-import Login from '@/components/Login/Login';
-import Navbar from '@/components/Navbar/Navbar';
+  ArrowRight,
+  Star,
+} from "lucide-react";
+import About from "@/app/About/page";
+import Service from "@/app/Services/page";
 
 export default function Home() {
-
-  const [showLogin, setshowLogin] = useState(false)
-
+ 
   return (
     <>
-      <main className='mainback'>
+      <main className="mainback">
 
-          <div className={showLogin ? 'page blur' : 'page' }>
+        <div className='page'>
 
-            <Navbar/>
-
-            <section className="homepage">
+          <section className="homepage">
 
             <div className="homeback">
-              <Image src="/images/homebackground.png" alt='Home background image' fill style={{ objectFit: "cover" }} />
+              <Image
+                src="/images/homebackground.png"
+                alt="Home background image"
+                fill
+                style={{ objectFit: "cover" }}
+              />
             </div>
 
             <div className="mainbox">
 
-              <h1 className='title'>
-                Find Trusted Local <br /> Experts.&nbsp;<span className='spanclr'>Anytime, &nbsp;Anywhere</span>.
+              <h1 className="title">
+                Find Trusted Local <br />
+                Experts.&nbsp;
+                <span className="spanclr">
+                  Anytime, &nbsp;Anywhere
+                </span>.
               </h1>
 
-              <p className='para1 para'>
-                From plumding to painting, electricians to carpenters - </p>
-              <p className='para2 para'>find skilled professioinals near you and get the job done right.
+              <p className="para1 para">
+                From plumding to painting, electricians to carpenters -
+              </p>
+
+              <p className="para2 para">
+                find skilled professioinals near you and get the job done right.
               </p>
 
               <div className="hero-buttons">
 
-                <button className="customer-btn" onClick={()=>setshowLogin(true)}>
-
+                <button
+                  className="customer-btn"
+                  onClick={() => {
+        window.dispatchEvent(new Event("open-login"));
+    }}
+                >
                   <div className="btn-text">
-
                     <h3>Book a Service</h3>
-
                     <p>Book Skilled Professionals</p>
-
                   </div>
 
-                  <ArrowRight size={34} strokeWidth={2.2} />
-
+                  <ArrowRight
+                    size={34}
+                    strokeWidth={2.2}
+                  />
                 </button>
 
-                <button className="worker-btn" onClick={()=>setshowLogin(true)}>
-
+                <button
+                  className="worker-btn"
+                  onClick={() => {
+        window.dispatchEvent(new Event("open-login"));
+    }}
+                >
                   <div className="btn-text">
-
                     <h3>Offer a Service</h3>
-
                     <p>Reach More Customers</p>
-
                   </div>
 
-                  <ArrowRight size={34} strokeWidth={2.2} />
-
+                  <ArrowRight
+                    size={34}
+                    strokeWidth={2.2}
+                  />
                 </button>
 
               </div>
@@ -129,40 +132,75 @@ export default function Home() {
 
                 <div className="trust-content">
 
-                  <p>Trusted by 5,000+ customers</p>
+                  <p>
+                    Trusted by 5,000+ customers
+                  </p>
 
                   <div className="rating">
 
                     <div className="stars">
-                      <Star fill="#FFC107" color="#FFC107" size={20} />
-                      <Star fill="#FFC107" color="#FFC107" size={20} />
-                      <Star fill="#FFC107" color="#FFC107" size={20} />
-                      <Star fill="#FFC107" color="#FFC107" size={20} />
-                      <Star fill="#FFC107" color="#FFC107" size={20} />
+
+                      <Star
+                        fill="#FFC107"
+                        color="#FFC107"
+                        size={20}
+                      />
+
+                      <Star
+                        fill="#FFC107"
+                        color="#FFC107"
+                        size={20}
+                      />
+
+                      <Star
+                        fill="#FFC107"
+                        color="#FFC107"
+                        size={20}
+                      />
+
+                      <Star
+                        fill="#FFC107"
+                        color="#FFC107"
+                        size={20}
+                      />
+
+                      <Star
+                        fill="#FFC107"
+                        color="#FFC107"
+                        size={20}
+                      />
+
                     </div>
 
-                    <span>4.8/5</span>
+                    <span>
+                      4.8/5
+                    </span>
 
                   </div>
 
                 </div>
 
               </div>
+
             </div>
 
-            <section id="services" className='scrollcontrol'>
+            <section
+              id="services"
+              className="scrollcontrol"
+            >
               <Service />
             </section>
 
-            <section id="about" className='scrollcontrol'>
+            <section
+              id="about"
+              className="scrollcontrol"
+            >
               <About />
             </section>
 
-            </section>
+          </section>
 
-          </div>
-
-        { showLogin && ( <Login closeLogin={()=>setshowLogin(false)}/>)}
+        </div>
 
       </main>
     </>

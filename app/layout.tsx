@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./global.css";
 import Footer from '@/components/Footer/Footer.jsx';
 import { Manrope } from "next/font/google";
-
+import Navbar from "@/components/Navbar/Navbar";
 //We could have used usestate here for login overlay problem, but for that u have to make it a client component but layout is private and hence cant be made client components.
 
 const manrope = Manrope({
@@ -22,7 +22,7 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
     <html lang="en">
 
       <body className={manrope.className}>
-
+        <Navbar/>
         {children}
         <Footer />
 

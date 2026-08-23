@@ -1,9 +1,10 @@
 "use client";
+
 import { useState } from "react";
 import "./Login.css";
 import NotificationBanner from "../../components/NotificationBanner/NotificationBanner";
 
-export default function Login({ closeLogin }) {
+export default function Login({ closeLogin, onLoginSuccess }) {
 
     const [LoginData, setLoginData] = useState({
         phone: "",
@@ -37,7 +38,9 @@ export default function Login({ closeLogin }) {
         const { name, value } = e.target;
 
         if (name === "phone") {
-            const numbersOnly = value.replace(/\D/g, "").slice(0, 10);
+            const numbersOnly = value
+                .replace(/\D/g, "")
+                .slice(0, 10);
 
             setLoginData((prev) => ({
                 ...prev,
@@ -62,7 +65,9 @@ export default function Login({ closeLogin }) {
         }
 
         if (LoginData.phone.length !== 10) {
-            showNotification("Please enter a valid 10-digit mobile number.");
+            showNotification(
+                "Please enter a valid 10-digit mobile number."
+            );
             return;
         }
 
@@ -72,37 +77,50 @@ export default function Login({ closeLogin }) {
         }
 
         try {
-            const response = await fetch("/api/auth/check-login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    phone: LoginData.phone,
-                    password: LoginData.password,
-                }),
-            });
+            const response = await fetch(
+                "/api/auth/check-login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        phone: LoginData.phone,
+                        password: LoginData.password,
+                    }),
+                }
+            );
 
             const data = await response.json();
 
             if (!response.ok) {
-                showNotification(data.message || "Login failed.");
+                showNotification(
+                    data.message || "Login failed."
+                );
                 return;
             }
 
             console.log("Login successful:", data);
 
+            // Update Navbar session
+            await onLoginSuccess();
+
             setTimeout(() => {
+
                 if (data.user.role === "serviceprovider") {
                     window.location.href = "/Serviceprovider";
                 } else {
                     window.location.href = "/Dashboard";
                 }
+
             }, 800);
 
         } catch (error) {
             console.error("Login Error:", error);
-            showNotification("Something went wrong. Please try again.");
+
+            showNotification(
+                "Something went wrong. Please try again."
+            );
         }
     };
 
@@ -131,9 +149,13 @@ export default function Login({ closeLogin }) {
 
                 <div className="login-header">
                     <h1>
-                        Log<span className="signcolor">in</span>
+                        Log
+                        <span className="signcolor">in</span>
                     </h1>
-                    <p>Access your SmartServe account.</p>
+
+                    <p>
+                        Access your SmartServe account.
+                    </p>
                 </div>
 
                 <form
@@ -145,7 +167,10 @@ export default function Login({ closeLogin }) {
                 >
 
                     <div className="input-group">
-                        <label>Mobile number</label>
+
+                        <label>
+                            Mobile number
+                        </label>
 
                         <input
                             type="tel"
@@ -154,11 +179,16 @@ export default function Login({ closeLogin }) {
                             value={LoginData.phone}
                             onChange={handleChange}
                             maxLength={10}
+                            inputMode="numeric"
                         />
+
                     </div>
 
                     <div className="input-group">
-                        <label>Password</label>
+
+                        <label>
+                            Password
+                        </label>
 
                         <input
                             type="password"
@@ -167,13 +197,19 @@ export default function Login({ closeLogin }) {
                             value={LoginData.password}
                             onChange={handleChange}
                         />
+
                     </div>
 
                     <div className="login-options">
 
                         <label className="remember">
+
                             <input type="checkbox" />
-                            <span>Remember me</span>
+
+                            <span>
+                                Remember me
+                            </span>
+
                         </label>
 
                         <button
@@ -198,28 +234,27 @@ export default function Login({ closeLogin }) {
                     <span>OR</span>
                 </div>
 
-                {/* <button
-                    className="google-btn"
-                    type="button"
-                >
-                    Continue with Google
-                </button> */}
-
                 <p className="signup-text">
+
                     Don't have an account?
 
                     <button
                         type="button"
                         className="signup-link"
                         onClick={() =>
-                            window.open("/Register", "_blank")
+                            window.open(
+                                "/Register",
+                                "_blank"
+                            )
                         }
                     >
                         Create one
                     </button>
+
                 </p>
 
             </div>
+
         </div>
     );
 }
