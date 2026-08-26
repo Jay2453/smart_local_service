@@ -24,8 +24,20 @@ export async function POST(request) {
         const existingEmail = await User.findOne({
             email: email.toLowerCase(),
         });
-
-        if (existingEmail) {
+        let found = false;
+        if(existingEmail)
+        {
+            found = true;
+        }
+        else
+        {
+            existingEmail = await Provider.findOne({
+                email: email.toLowerCase(),
+            });  
+            if(existingEmail)
+                found = true;        
+        }
+        if (found) {
             return NextResponse.json(
                 {
                     success: false,
@@ -39,8 +51,20 @@ export async function POST(request) {
         const existingPhone = await User.findOne({
             phone: phone,
         });
-
-        if (existingPhone) {
+        found = false; // not required, but still for safety purpose
+        if(existingPhone)
+        {
+            found = true;
+        }
+        else
+        {
+            existingPhone = await Provider.findOne({
+                phone: phone,
+            });  
+            if(existingPhone)
+                found = true;               
+        }
+        if (found) {
             return NextResponse.json(
                 {
                     success: false,

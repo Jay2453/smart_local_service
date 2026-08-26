@@ -4,30 +4,23 @@ import Link from "next/link";
 import "./Navbar.css";
 import Image from "next/image";
 import Login from "@/components/Login/Login";
-
 const Navbar = () => {
-
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
-
   const getSession = async () => {
     try {
       const response = await fetch("/api/auth/session");
-
       if (!response.ok) {
         setSession(null);
         return;
       }
-
       const data = await response.json();
-
       if (data.success) {
         setSession(data.user);
       } else {
         setSession(null);
       }
-
     } catch (error) {
       console.error("Session error:", error);
       setSession(null);
@@ -99,21 +92,17 @@ const Navbar = () => {
         </Link>
 
         <div className="navoptbuts">
-
           <ul className="nav-con">
-
             <li>
               <Link href="/">Home</Link>
             </li>
-
             <li>
               <Link href="/#services">
                 Services
               </Link>
             </li>
-
             <li>
-              <Link href="/#About">
+              <Link href="/#about">
                 About Us
               </Link>
             </li>
@@ -166,13 +155,9 @@ const Navbar = () => {
                 </Link>
               </li>
             )}
-
           </ul>
-
         </div>
-
         <div className="profile">
-
           <span className="profile_name">
             {loading
               ? "..."
@@ -181,7 +166,6 @@ const Navbar = () => {
                 : "GUEST"
             }
           </span>
-
           <Image
             className="profile_logo"
             src="/images/profileLogo.jpg"
@@ -189,9 +173,7 @@ const Navbar = () => {
             width={40}
             height={40}
           />
-
         </div>
-
       </div>
     </>
   );
