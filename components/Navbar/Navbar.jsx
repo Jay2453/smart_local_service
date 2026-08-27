@@ -4,10 +4,31 @@ import Link from "next/link";
 import "./Navbar.css";
 import Image from "next/image";
 import Login from "@/components/Login/Login";
+import NotificationBanner from "../NotificationBanner/NotificationBanner";
 const Navbar = () => {
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "error",
+  });
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
+  const showNotification = (message, type = "error") => {
+    setNotification({
+      show: true,
+      message,
+      type,
+    });
+  };
+
+  const hideNotification = () => {
+    setNotification({
+      show: false,
+      message: "",
+      type: "error",
+    });
+  };
   const getSession = async () => {
     try {
       const response = await fetch("/api/auth/session");
@@ -28,22 +49,40 @@ const Navbar = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
-
     getSession();
 
-    const openLogin = () => {
-      setShowLogin(true);
+    const handleServiceAction = (event) => {
+      const { type } = event.detail;
+
+      if (!session) {
+        setShowLogin(true);
+        return;
+      }
+
+      if (type === "book") {
+        if (session.role !== "customer") {
+          showNotification("You are not registered as a customer.");
+          return;
+        }
+        window.location.href = "/Dashboard";
+      }
+
+      if (type === "offer") {
+        if (session.role !== "serviceprovider") {
+          showNotification("You are not registered as a service provider.");
+          return;
+        }
+        window.location.href = "/Serviceprovider";
+      }
     };
 
-    window.addEventListener("open-login", openLogin);
+    window.addEventListener("service-action", handleServiceAction);
 
     return () => {
-      window.removeEventListener("open-login", openLogin);
+      window.removeEventListener("service-action", handleServiceAction);
     };
-
-  }, []);
+  }, [session]);
 
   // Handle logout
   const handleLogout = async () => {
@@ -72,6 +111,13 @@ const Navbar = () => {
 
   return (
     <>
+      {notification.show && (
+        <NotificationBanner
+          message={notification.message}
+          type={notification.type}
+          onClose={hideNotification}
+        />
+      )}
       {showLogin && (
         <Login
           closeLogin={() => setShowLogin(false)}

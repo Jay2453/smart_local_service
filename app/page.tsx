@@ -10,7 +10,7 @@ import About from "@/app/About/page";
 import Service from "@/app/Services/page";
 
 export default function Home() {
- 
+
   return (
     <>
       <main className="mainback">
@@ -50,9 +50,11 @@ export default function Home() {
 
                 <button
                   className="customer-btn"
-                  onClick={() => {
-        window.dispatchEvent(new Event("open-login"));
-    }}
+                  onClick={() => window.dispatchEvent(
+                    new CustomEvent("service-action", {
+                      detail: { type: "book" }
+                    })
+                  )}
                 >
                   <div className="btn-text">
                     <h3>Book a Service</h3>
@@ -67,9 +69,11 @@ export default function Home() {
 
                 <button
                   className="worker-btn"
-                  onClick={() => {
-        window.dispatchEvent(new Event("open-login"));
-    }}
+                  onClick={() => window.dispatchEvent(
+                    new CustomEvent("service-action", {
+                      detail: { type: "offer" }
+                    })
+                  )}
                 >
                   <div className="btn-text">
                     <h3>Offer a Service</h3>

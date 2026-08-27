@@ -3,7 +3,7 @@
 import { useState } from "react";
 import "./Login.css";
 import NotificationBanner from "../../components/NotificationBanner/NotificationBanner";
-
+ 
 export default function Login({ closeLogin, onLoginSuccess }) {
 
     const [LoginData, setLoginData] = useState({
