@@ -1,0 +1,28 @@
+.not-found-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.not-found-content {
+    max-width: 500px;
+}
+
+.not-found-content h1 {
+    font-size: 120px;
+    margin: 0;
+    font-weight: 800;
+}
+
+.not-found-content h2 {
+    font-size: 32px;
+    margin: 10px 0;
+}
+
+.not-found-content p {
+    font-size: 17px;
+    margin: 15px 0 30px;
+}

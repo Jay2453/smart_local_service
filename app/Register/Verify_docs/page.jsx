@@ -1,11 +1,8 @@
 "use client";
-
 import "./VerificationModule.css";
-
 import { useState, useRef } from "react";
-
 import { Geist } from "next/font/google";
-
+import NotificationBanner from "../../../components/NotificationBanner/NotificationBanner";
 import {
   ShieldCheck,
   UploadCloud,
@@ -21,17 +18,41 @@ const geist = Geist({
 });
 
 export default function Page() {
-
   const videoRef = useRef(null);
   const fileInputRef = useRef(null);
-
   const [cameraActive, setCameraActive] = useState(false);
   const [selfie, setSelfie] = useState(null);
   const [selfiePreview, setSelfiePreview] = useState("");
-
   const [documentType, setDocumentType] = useState("");
   const [documentFile, setDocumentFile] = useState(null);
 
+  const [Notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "error",
+  });
+  const showNotification = (message, type = "error") => {
+    setNotification({
+      show: true,
+      message,
+      type,
+    });
+  };
+  const handleVerify = async () => {
+    if (!documentType) {
+      showNotification("Please select a valid document type.");
+      return;
+    }
+    if (!selfie) {
+      showNotification("Please click a live selfie.");
+      return;
+    }
+    if (!documentFile) {
+      showNotification("Please upload a valid govenment document.");
+      return;
+    }
+    return;
+  }
   // Start camera
   const startCamera = async () => {
     try {
@@ -145,8 +166,19 @@ export default function Page() {
   };
 
   return (
-    <div className={geist.className}>
 
+    <div className={geist.className}>
+      {Notification.show && (
+        <NotificationBanner message={Notification.message}
+          type={Notification.type}
+          onClose={() =>
+            setNotification({
+              show: false,
+              message: "",
+              type: "error",
+            })
+          } />
+      )}
       <div className="verification-page">
 
         <div className="verification-container">
@@ -228,7 +260,7 @@ export default function Page() {
                 <h3>
                   {documentFile
                     ? documentFile.name
-                    : "Click to upload or drag & drop"}
+                    : "Click to upload your file"}
                 </h3>
 
                 <p>
@@ -407,6 +439,7 @@ export default function Page() {
             <button
               type="button"
               className="submit-btn"
+              onClick={handleVerify}
             >
 
               Submit Verification

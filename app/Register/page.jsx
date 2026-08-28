@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import OtpVerifyModal from '../../components/OTPmodal/Otpverifymodal';
 import NotificationBanner from '../../components/NotificationBanner/NotificationBanner';
 import './register.css';
@@ -22,7 +22,7 @@ import {
 } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { FaApple } from 'react-icons/fa';
-
+ 
 const Register = () => {
   const [FormData, setFormData] = useState({
     name: "",
@@ -485,6 +485,7 @@ const Register = () => {
                     <div className="input-wrapper">
                       <span className="input-emoji">🛠️</span>
                       <select value={FormData.Profession} name='Profession' onChange={handleChange}>
+                        <option>Select profession</option>
                         <option value="Plumbing">Plumbing</option>
                         <option value="Electrical">Electrical</option>
                         <option value="Carpentry">Carpentry</option>
@@ -502,6 +503,7 @@ const Register = () => {
                     <div className="input-wrapper">
                       <FiStar className="input-icon" />
                       <select value={FormData.Experience} name='Experience' onChange={handleChange}>
+                        <option>Select Experience Time</option>
                         <option value="0-1">Less than 1 Year</option>
                         <option value="1-3">1-3 Years</option>
                         <option value="3-5">3-5 Years</option>
@@ -517,6 +519,7 @@ const Register = () => {
                     <div className="input-wrapper">
                       <FiTarget className="input-icon" />
                       <select value={FormData.ServiceRadius} name='ServiceRadius' onChange={handleChange}>
+                        <option>Select Service Range</option>
                         <option value="in 5km">Within 5 km</option>
                         <option value="in 10km">Within 10 km</option>
                         <option value="in 15km">Within 15 km</option>
