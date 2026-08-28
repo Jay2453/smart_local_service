@@ -115,7 +115,7 @@ const Register = () => {
     } catch (error) {
       console.error("RESEND OTP ERROR:", error);
     }
-  };
+  }; 
 
   const handleContinue = async () => {
     // Check form fields

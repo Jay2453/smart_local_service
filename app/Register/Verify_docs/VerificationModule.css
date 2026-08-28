@@ -151,25 +151,18 @@ box-shadow:
 =========================== */
 
 .dropdown{
-
     height:58px;
-
+    width: 100%;
     border:1px solid #d7dde2;
-
     border-radius:14px;
-
     display:flex;
     align-items:center;
     justify-content:space-between;
-
     padding:0 18px;
-
     cursor:pointer;
-
     transition:.3s;
-
     margin-bottom:28px;
-
+    font-size: medium;
 }
 
 .dropdown:hover{

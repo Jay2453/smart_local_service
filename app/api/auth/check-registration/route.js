@@ -21,7 +21,7 @@ export async function POST(request) {
 
         await connectDB();
 
-        const existingEmail = await User.findOne({
+        let existingEmail = await User.findOne({
             email: email.toLowerCase(),
         });
         let found = false;
@@ -48,7 +48,7 @@ export async function POST(request) {
             );
         }
 
-        const existingPhone = await User.findOne({
+        let existingPhone = await User.findOne({
             phone: phone,
         });
         found = false; // not required, but still for safety purpose

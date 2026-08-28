@@ -166,12 +166,6 @@ const Navbar = () => {
               </li>
             )}
 
-            <li>
-              <Link href="">
-                Booking History
-              </Link>
-            </li>
-
             {/* Login when logged out */}
             {!session && !loading && (
               <li>

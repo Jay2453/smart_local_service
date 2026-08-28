@@ -45,8 +45,7 @@ export async function POST(request) {
             );
         }
 
-        let account;
-        let role;
+        let account, role;
 
         if (provider) {
             account = provider;

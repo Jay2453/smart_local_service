@@ -52,27 +52,10 @@ export async function POST(request) {
 
         await connectDB();
 
-        const existingUser = await User.findOne({
-            $or: [
-                { email: email.toLowerCase() },
-                { phone: phone }
-            ]
-        });
-
-        if (existingUser) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: "Email already registered",
-                },
-                { status: 409 }
-            );
-        }
-
         const hashedPassword = await bcrypt.hash(password, 12);
-
-        if (role == "serviceprovider") {
-            const provider = await Provider.create({
+        let createdUser;
+        if (role === "serviceprovider") {
+            createdUser = await Provider.create({
                 name,
                 phone,
                 email: email.toLowerCase(),
@@ -86,9 +69,9 @@ export async function POST(request) {
                 Experience,
                 ServiceRadius,
             });
-        }
-        else {
-            const user = await User.create({
+
+        } else {
+            createdUser = await User.create({
                 name,
                 phone,
                 email: email.toLowerCase(),
@@ -106,10 +89,10 @@ export async function POST(request) {
                 success: true,
                 message: "Registration successful",
                 user: {
-                    id: User._id,
-                    name: User.name,
-                    email: User.email,
-                    role: User.role,
+                    id: createdUser._id,
+                    name: createdUser.name,
+                    email: createdUser.email,
+                    role: createdUser.role,
                 },
             },
             { status: 201 }
