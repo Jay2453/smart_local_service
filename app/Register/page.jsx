@@ -33,6 +33,8 @@ const Register = () => {
     Profession: "",
     Experience: "",
     ServiceRadius: "",
+    latitude: "",
+    longitude: "",
   });
   const [IsServiceprovider, setIsServiceprovider] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -203,6 +205,97 @@ const Register = () => {
     }
   };
 
+ const getCurrentLocation = () => {
+
+    if (!navigator.geolocation) {
+        showNotification(
+            "Location is not supported by your browser.",
+            "error"
+        );
+        return;
+    }
+
+    showNotification(
+        "Detecting your location...",
+        "success"
+    );
+
+    navigator.geolocation.getCurrentPosition(
+
+        async (position) => {
+
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            try {
+
+                const response = await fetch(
+                    `/api/location/reverse-geocode?lat=${latitude}&lon=${longitude}`
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showNotification(
+                        data.message || "Unable to find your address.",
+                        "error"
+                    );
+                    return;
+                }
+
+                setFormData((prev) => ({
+                    ...prev,
+                    address: data.address,
+                    latitude: latitude,
+                    longitude: longitude,
+                }));
+
+                showNotification(
+                    "Location detected successfully!",
+                    "success"
+                );
+
+            } catch (error) {
+
+                console.error("Reverse geocoding error:", error);
+
+                showNotification(
+                    "Unable to get your address.",
+                    "error"
+                );
+            }
+        },
+
+        (error) => {
+            console.error("Location error:", error);
+            if (error.code === 1) {
+                showNotification(
+                    "Location permission denied. Please allow access.",
+                    "error"
+                );
+            }
+
+            else if (error.code === 2) {
+                showNotification(
+                    "Unable to detect your location.",
+                    "error"
+                );
+            }
+
+            else if (error.code === 3) {
+                showNotification(
+                    "Location request timed out.",
+                    "error"
+                );
+            }
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
+        }
+    );
+};
   const handleRegistration = async () => {
     try {
       const response = await fetch("/api/auth/register", {
@@ -455,7 +548,7 @@ const Register = () => {
                       </label>
                     </div>
                     <div className="input-wrapper">
-                      <FiHome className="input-icon" />
+                      <FiHome className="input-icon "/>
                       <input
                         type="text"
                         name="address"
@@ -464,6 +557,9 @@ const Register = () => {
                         onChange={handleChange}
                       />
                     </div>
+                    <button className='location-btn' type='button' onClick={getCurrentLocation}>
+                      Use curent location
+                    </button>
                   </div>
 
                 </div>
