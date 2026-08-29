@@ -30,14 +30,22 @@ export async function POST(request) {
             expiresAt,
         });
 
-        console.log("================================");
-        console.log("OTP GENERATED:", otp);
-        console.log("PHONE:", phone);
-        console.log("================================");
+        // Show OTP only during development
+        if (process.env.NODE_ENV === "development") {
+            console.log("================================");
+            console.log("OTP GENERATED:", otp);
+            console.log("PHONE:", phone);
+            console.log("================================");
+        }
 
         return NextResponse.json({
             success: true,
             message: "OTP generated successfully",
+
+            // Send OTP to frontend only during development
+            ...(process.env.NODE_ENV === "development" && {
+                otp: otp,
+            }),
         });
 
     } catch (error) {

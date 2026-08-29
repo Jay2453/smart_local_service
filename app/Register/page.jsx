@@ -20,9 +20,7 @@ import {
   FiChevronDown,
   FiCheckCircle,
 } from 'react-icons/fi';
-import { FcGoogle } from 'react-icons/fc';
-import { FaApple } from 'react-icons/fa';
- 
+
 const Register = () => {
   const [FormData, setFormData] = useState({
     name: "",
@@ -30,10 +28,8 @@ const Register = () => {
     email: "",
     password: "",
     confirmpassword: "",
+    role: "",
     address: "",
-    city: "",
-    pincode: "",
-    state: "Gujarat",
     Profession: "",
     Experience: "",
     ServiceRadius: "",
@@ -110,94 +106,102 @@ const Register = () => {
         return;
       }
 
-      console.log("New OTP generated");
+      if (data.otp) {
+        showNotification(
+          `Your OTP is ${data.otp}`,
+          "success"
+        );
+      }
 
     } catch (error) {
       console.error("RESEND OTP ERROR:", error);
+      showNotification("Could not resend OTP.");
     }
-  }; 
+  };
 
   const handleContinue = async () => {
     // Check form fields
     if (
-        !FormData.name ||
-        !FormData.phone ||
-        !FormData.email ||
-        !FormData.password ||
-        !FormData.confirmpassword ||
-        !FormData.address ||
-        !FormData.city ||
-        !FormData.state ||
-        !FormData.pincode
+      !FormData.name ||
+      !FormData.phone ||
+      !FormData.email ||
+      !FormData.password ||
+      !FormData.confirmpassword
     ) {
-        showNotification("Please fill in all the required fields.");
-        return;
+      showNotification("Please fill in all the required fields.");
+      return;
     }
-    if (IsServiceprovider && (!FormData.ServiceRadius || !FormData.Profession || !FormData.Experience))
-    {
+    if (IsServiceprovider && (!FormData.ServiceRadius || !FormData.Profession || !FormData.Experience || !FormData.address)) {
       showNotification("Please fill in the required Service Provider Fields.");
-      return;      
+      return;
     }
 
     // Check passwords
     if (FormData.password !== FormData.confirmpassword) {
-        showNotification("Passwords do not match.");
-        return;
+      showNotification("Passwords do not match.");
+      return;
     }
 
     try {
 
-        // Check email and phone in database
-        const checkResponse = await fetch(
-            "/api/auth/check-registration",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: FormData.email,
-                    phone: FormData.phone,
-                }),
-            }
-        );
-
-        const checkData = await checkResponse.json();
-
-        if (!checkResponse.ok) {
-            showNotification(checkData.message);
-            return;
+      // Check email and phone in database
+      const checkResponse = await fetch(
+        "/api/auth/check-registration",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: FormData.email,
+            phone: FormData.phone,
+          }),
         }
+      );
 
-        // Only now generate OTP
-        const otpResponse = await fetch(
-            "/api/auth/send-otp",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    phone: FormData.phone,
-                }),
-            }
-        );
+      const checkData = await checkResponse.json();
 
-        const otpData = await otpResponse.json();
+      if (!checkResponse.ok) {
+        showNotification(checkData.message);
+        return;
+      }
 
-        if (!otpResponse.ok) {
-            showNotification(otpData.message);
-            return;
+      // Only now generate OTP
+      const otpResponse = await fetch(
+        "/api/auth/send-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            phone: FormData.phone,
+          }),
         }
+      );
 
-        // Open OTP modal
-        setShowoverlay(true);
+      const otpData = await otpResponse.json();
+
+      if (!otpResponse.ok) {
+        showNotification(otpData.message);
+        return;
+      }
+
+      if (otpData.otp) {
+        showNotification(
+          `Your OTP is ${otpData.otp}`,
+          "success"
+        );
+      }
+
+      // Open OTP modal
+      setShowoverlay(true);
 
     } catch (error) {
-        console.error("Continue error:", error);
-        showNotification("Something went wrong. Please try again.");
+      console.error("Continue error:", error);
+      showNotification("Something went wrong. Please try again.");
     }
-};
+  };
 
   const handleRegistration = async () => {
     try {
@@ -213,9 +217,6 @@ const Register = () => {
           password: FormData.password,
           role: IsServiceprovider ? "serviceprovider" : "customer",
           address: FormData.address,
-          city: FormData.city,
-          pincode: FormData.pincode,
-          state: FormData.state,
           Proffesion: FormData.Profession,
           Experience: FormData.Experience,
           ServiceRadius: FormData.ServiceRadius,
@@ -249,14 +250,14 @@ const Register = () => {
 
       {Notification.show && (
         <NotificationBanner message={Notification.message}
-        type={Notification.type}
-        onClose={()=>
-          setNotification({
-            show: false,
-            message: "",
-            type: "error",
-          })
-        }/>
+          type={Notification.type}
+          onClose={() =>
+            setNotification({
+              show: false,
+              message: "",
+              type: "error",
+            })
+          } />
       )}
 
       {/* OTP verification module */}
@@ -365,91 +366,9 @@ const Register = () => {
               </div>
             </label>
 
-            {/* Address */}
-            <div className="personalinfo section-header">
-              <FiMapPin className="section-icon" />
-              <h2>Address</h2>
-            </div>
-            <p className="paratext">Where are you located?</p>
-
-            <div className="form">
-              <div className="form-grid address-grid">
-                <div className="form-group full-width">
-                  <label>House / Building / Street</label>
-                  <div className="input-wrapper">
-                    <FiHome className="input-icon" />
-                    <input
-                      type="text"
-                      name="address"
-                      placeholder="12, Shanti Nagar, Near Sardar Patel Chowk"
-                      value={FormData.address}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>City</label>
-                  <div className="input-wrapper">
-                    <FiHome className="input-icon" />
-                    <input
-                      type="text"
-                      name="city"
-                      placeholder="Morbi"
-                      value={FormData.city}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>State</label>
-                  <div className="input-wrapper">
-                    <FiMapPin className="input-icon" />
-                    <select
-                      name="state"
-                      value={FormData.state}
-                      onChange={handleChange}
-                    >
-                      <option value="Gujarat">Gujarat</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>PIN Code</label>
-                  <div className="input-wrapper">
-                    <FiMapPin className="input-icon" />
-                    <input
-                      type="text"
-                      name="pincode"
-                      placeholder="6-Digit pincode"
-                      value={FormData.pincode}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <button type="button" className="continue-btn" onClick={handleContinue}>
               Continue <FiArrowRight />
             </button>
-
-            <div className="divider-row">
-              <span className="line" />
-              <p>or continue with</p>
-              <span className="line" />
-            </div>
-
-            <div className="social-row">
-              <button type="button" className="social-btn">
-                <FcGoogle size={18} /> Continue with Google
-              </button>
-              <button type="button" className="social-btn">
-                <FaApple size={18} /> Continue with Apple
-              </button>
-            </div>
 
             <p className="footer-safe">
               <FiLock size={12} /> Your information is safe with us and will never be shared.
@@ -528,6 +447,25 @@ const Register = () => {
                     </div>
                     <p className="hint-text">Within how many km you provide service</p>
                   </div>
+
+                  <div className="form-group full-width">
+                    <div className="personalinfo section-header">
+                      <label>
+                        <FiMapPin className="section-icon" /> Address
+                      </label>
+                    </div>
+                    <div className="input-wrapper">
+                      <FiHome className="input-icon" />
+                      <input
+                        type="text"
+                        name="address"
+                        placeholder=""
+                        value={FormData.address}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+
                 </div>
               )}
             </div>

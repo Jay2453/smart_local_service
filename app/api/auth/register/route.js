@@ -5,16 +5,13 @@ import User from "@/models/User";
 import Provider from "@/models/Provider";
 export async function POST(request) {
     try {
-        const {
+        const { 
             name,
             phone,
             email,
             password,
             role,
             address,
-            city,
-            state,
-            pincode,
             Proffesion,
             Experience,
             ServiceRadius,
@@ -25,10 +22,6 @@ export async function POST(request) {
             !email ||
             !phone ||
             !password ||
-            !city ||
-            !state ||
-            !address ||
-            !pincode ||
             !role
         ) {
             return NextResponse.json(
@@ -60,14 +53,11 @@ export async function POST(request) {
                 phone,
                 email: email.toLowerCase(),
                 password: hashedPassword,
-                role,
                 address,
-                city,
-                state,
-                pincode,
                 Proffesion,
                 Experience,
                 ServiceRadius,
+                role,
             });
 
         } else {
@@ -77,10 +67,6 @@ export async function POST(request) {
                 email: email.toLowerCase(),
                 password: hashedPassword,
                 role,
-                address,
-                city,
-                state,
-                pincode,
             });
         }
 
