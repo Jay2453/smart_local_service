@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useRef } from "react";
 import {
   Hammer,
@@ -21,7 +20,6 @@ import {
 
 import styles from "./customer.module.css";
 import NotificationBanner from "../../components/NotificationBanner/NotificationBanner";
-// ---- Static catalogue -------------------------------------------------
 
 const SERVICES = [
   {
@@ -185,12 +183,12 @@ function SummaryRow({
         </div>
 
         <button
-  type="button"
-  className={styles.linkBtn}
-  onClick={onAction}
->
-  {action}
-</button>
+          type="button"
+          className={styles.linkBtn}
+          onClick={onAction}
+        >
+          {action}
+        </button>
       </div>
 
       <div className={styles.summaryRowBody}>
@@ -338,6 +336,75 @@ export default function BookService() {
     );
   }
 
+  const handleBookService = () => {
+  if (!FormData.address.trim()) {
+    showNotification(
+      "Please enter your service address.",
+      "error"
+    );
+    return;
+  }
+
+  if (!preferredDate) {
+    showNotification(
+      "Please select your preferred date.",
+      "error"
+    );
+    setShowDateTimePicker(true);
+    return;
+  }
+
+  if (!preferredTime) {
+    showNotification(
+      "Please select your preferred time.",
+      "error"
+    );
+    setShowDateTimePicker(true);
+    return;
+  }
+
+  const missingProblem = selectedServices.find(
+    (service) => !problemChoice[service.id]
+  );
+
+  if (missingProblem) {
+    showNotification(
+      `Please select a problem for ${missingProblem.name}.`,
+      "error"
+    );
+    return;
+  }
+
+  if (!description.trim()) {
+    showNotification(
+      "Please describe your issue.",
+      "error"
+    );
+    return;
+  }
+
+  showNotification(
+    "All details are filled. Booking can proceed!",
+    "success"
+  );
+
+  console.log("Booking Data:", {
+    address: FormData.address,
+    latitude: FormData.latitude,
+    longitude: FormData.longitude,
+    services: selectedServices.map((service) => ({
+      id: service.id,
+      name: service.name,
+      price: service.price,
+      problem: problemChoice[service.id],
+    })),
+    preferredDate,
+    preferredTime,
+    description,
+    photos,
+    total,
+  });
+};
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -465,7 +532,6 @@ export default function BookService() {
 
   return (
     <>
-    
       {Notification.show && (
         <NotificationBanner
           message={Notification.message}
@@ -855,11 +921,6 @@ export default function BookService() {
               </div>
 
             </div>
-
-            {/* =================================================
-                BOOK SERVICE
-            ================================================= */}
-
             <button
               type="button"
               disabled={
@@ -867,6 +928,7 @@ export default function BookService() {
                 !FormData.address
               }
               className={styles.submitBtn}
+              onClick={handleBookService}
             >
               Book Service
               <ChevronRight size={18} />
@@ -1028,49 +1090,45 @@ export default function BookService() {
               className={styles.divider}
             />
 
-            {/* ADDRESS SUMMARY */}
-
             <SummaryRow
-  icon={
-    <MapPin
-      size={16}
-      className={styles.greenIcon}
-    />
-  }
-  title="Service Address"
-  action="Edit"
-  onAction={() => {
-    const addressInput = document.querySelector(
-      `.${styles.addressInput}`
-    );
+              icon={
+                <MapPin
+                  size={16}
+                  className={styles.greenIcon}
+                />
+              }
+              title="Service Address"
+              action="Edit"
+              onAction={() => {
+                const addressInput = document.querySelector(
+                  `.${styles.addressInput}`
+                );
 
-    if (addressInput) {
-      addressInput.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
+                if (addressInput) {
+                  addressInput.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                  });
 
-      setTimeout(() => {
-        addressInput.focus();
-      }, 400);
-    }
-  }}
->
-  <div className={styles.addressText}>
-    {FormData.address || "Enter your service address"}
-  </div>
-</SummaryRow>
+                  setTimeout(() => {
+                    addressInput.focus();
+                  }, 400);
+                }
+              }}
+            >
+              <div className={styles.addressText}>
+                {FormData.address || "Enter your service address"}
+              </div>
+            </SummaryRow>
 
             <div
               className={styles.divider}
             />
 
-            {/* DATE AND TIME */}
-
             <SummaryRow
               title="Preferred Date & Time"
               action="Edit"
-              onAction={()=> setShowDateTimePicker(true)}
+              onAction={() => setShowDateTimePicker(true)}
             >
               <div className={styles.dateTimeRow}>
                 <Calendar size={15} />
@@ -1091,9 +1149,6 @@ export default function BookService() {
             <div
               className={styles.divider}
             />
-
-            {/* TOTAL */}
-
             <div
               className={styles.totalRow}
             >
@@ -1111,9 +1166,6 @@ export default function BookService() {
               </span>
 
             </div>
-
-            {/* SECURE BOOKING */}
-
             <div
               className={styles.secureBox}
             >
@@ -1149,100 +1201,100 @@ export default function BookService() {
             </div>
 
             <button
-  type="button"
-  className={styles.changeDateBtn}
-  onClick={() => setShowDateTimePicker(true)}
->
-  <Calendar size={16} />
-  Change Date &amp; Time
-</button>
-{showDateTimePicker && (
-  <div className={styles.dateTimePicker}>
+              type="button"
+              className={styles.changeDateBtn}
+              onClick={() => setShowDateTimePicker(true)}
+            >
+              <Calendar size={16} />
+              Change Date &amp; Time
+            </button>
+            {showDateTimePicker && (
+              <div className={styles.dateTimePicker}>
 
-    <div className={styles.pickerHeader}>
-      <h3>Choose Date & Time</h3>
+                <div className={styles.pickerHeader}>
+                  <h3>Choose Date & Time</h3>
 
-      <button
-        type="button"
-        onClick={() => setShowDateTimePicker(false)}
-        className={styles.closePickerBtn}
-      >
-        <X size={18} />
-      </button>
-    </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowDateTimePicker(false)}
+                    className={styles.closePickerBtn}
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
 
-    <label className={styles.pickerLabel}>
-      Preferred Date
-    </label>
+                <label className={styles.pickerLabel}>
+                  Preferred Date
+                </label>
 
-    <input
-      type="date"
-      value={preferredDate}
-      min={new Date().toISOString().split("T")[0]}
-      onChange={(e) =>
-        setPreferredDate(e.target.value)
-      }
-      className={styles.dateInput}
-    />
+                <input
+                  type="date"
+                  value={preferredDate}
+                  min={new Date().toISOString().split("T")[0]}
+                  onChange={(e) =>
+                    setPreferredDate(e.target.value)
+                  }
+                  className={styles.dateInput}
+                />
 
-    <label className={styles.pickerLabel}>
-      Preferred Time
-    </label>
+                <label className={styles.pickerLabel}>
+                  Preferred Time
+                </label>
 
-    <select
-      value={preferredTime}
-      onChange={(e) =>
-        setPreferredTime(e.target.value)
-      }
-      className={styles.timeSelect}
-    >
-      <option value="">
-        Select a time slot
-      </option>
+                <select
+                  value={preferredTime}
+                  onChange={(e) =>
+                    setPreferredTime(e.target.value)
+                  }
+                  className={styles.timeSelect}
+                >
+                  <option value="">
+                    Select a time slot
+                  </option>
 
-      <option value="8:00 AM - 10:00 AM">
-        8:00 AM - 10:00 AM
-      </option>
+                  <option value="8:00 AM - 10:00 AM">
+                    8:00 AM - 10:00 AM
+                  </option>
 
-      <option value="10:00 AM - 12:00 PM">
-        10:00 AM - 12:00 PM
-      </option>
+                  <option value="10:00 AM - 12:00 PM">
+                    10:00 AM - 12:00 PM
+                  </option>
 
-      <option value="12:00 PM - 2:00 PM">
-        12:00 PM - 2:00 PM
-      </option>
+                  <option value="12:00 PM - 2:00 PM">
+                    12:00 PM - 2:00 PM
+                  </option>
 
-      <option value="2:00 PM - 4:00 PM">
-        2:00 PM - 4:00 PM
-      </option>
+                  <option value="2:00 PM - 4:00 PM">
+                    2:00 PM - 4:00 PM
+                  </option>
 
-      <option value="4:00 PM - 6:00 PM">
-        4:00 PM - 6:00 PM
-      </option>
+                  <option value="4:00 PM - 6:00 PM">
+                    4:00 PM - 6:00 PM
+                  </option>
 
-      <option value="6:00 PM - 8:00 PM">
-        6:00 PM - 8:00 PM
-      </option>
-    </select>
+                  <option value="6:00 PM - 8:00 PM">
+                    6:00 PM - 8:00 PM
+                  </option>
+                </select>
 
-    <button
-      type="button"
-      className={styles.locationbtn}
-      disabled={!preferredDate || !preferredTime}
-      onClick={() => {
-        setShowDateTimePicker(false);
+                <button
+                  type="button"
+                  className={styles.locationbtn}
+                  disabled={!preferredDate || !preferredTime}
+                  onClick={() => {
+                    setShowDateTimePicker(false);
 
-        showNotification(
-          "Date and time updated successfully!",
-          "success"
-        );
-      }}
-    >
-      Save Date & Time
-    </button>
+                    showNotification(
+                      "Date and time updated successfully!",
+                      "success"
+                    );
+                  }}
+                >
+                  Save Date & Time
+                </button>
 
-  </div>
-)}
+              </div>
+            )}
           </div>
 
         </div>
