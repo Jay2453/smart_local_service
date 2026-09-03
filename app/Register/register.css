@@ -505,11 +505,10 @@ body {
 
 .location-btn:hover {
     transform: translateY(-2px);
-
     background: linear-gradient(
         135deg,
-        #267349,
-        #35965b
+        #15b50d,
+        #09d510
     );
 
     box-shadow: 0 6px 16px rgba(46, 139, 87, 0.3);

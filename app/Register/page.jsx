@@ -296,6 +296,7 @@ const Register = () => {
         }
     );
 };
+
   const handleRegistration = async () => {
     try {
       const response = await fetch("/api/auth/register", {
@@ -384,7 +385,7 @@ const Register = () => {
                   <label>Full Name</label>
                   <div className="input-wrapper">
                     <FiUser className="input-icon" />
-                    <input type="text" placeholder="username" name="name" value={FormData.name} onChange={handleChange} />
+                    <input type="text" placeholder="username" value={FormData.name} onChange={handleChange} />
                   </div>
                 </div>
 
