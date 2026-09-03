@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -155,7 +155,12 @@ function StatCard({ stat }) {
   );
 }
 
-function RequestCard({ request }) {
+function RequestCard({
+  request,
+  onAccept,
+  onReject,
+  onViewDetails,
+}) {
   const Icon = request.icon;
   return (
     <div className={styles.requestCard}>
@@ -198,10 +203,19 @@ function RequestCard({ request }) {
         </div>
 
         <div className={styles.requestActions}>
-          <button type="button" className={styles.viewDetailsBtn}>
+          <button
+            type="button"
+            className={styles.viewDetailsBtn}
+            onClick={() => onViewDetails(request)}
+          >
             View Details
           </button>
-          <button type="button" className={styles.acceptBtn}>
+
+          <button
+            type="button"
+            className={styles.acceptBtn}
+            onClick={() => onAccept(request)}
+          >
             <CheckCircle2 size={16} />
             Accept Request
           </button>
@@ -257,110 +271,185 @@ function ReviewItem({ review }) {
 
 export default function ProviderDashboard() {
   const [online, setOnline] = useState(true);
+  const [session, setSession] = useState(null);
+  const [requests, setRequests] = useState(REQUESTS);
 
+  const [acceptedJobs, setAcceptedJobs] = useState([]);
+
+  const [completedJobs, setCompletedJobs] = useState([]);
+
+  const [selectedRequest, setSelectedRequest] = useState(null);
+
+  const [showDetails, setShowDetails] = useState(false);
+
+  const [activeTab, setActiveTab] = useState("requests");
+  const handleAcceptRequest = (request) => {
+    setRequests((prev) =>
+      prev.filter((item) => item.id !== request.id)
+    );
+
+    setAcceptedJobs((prev) => [
+      ...prev,
+      {
+        ...request,
+        status: "Accepted",
+      },
+    ]);
+  };
+  useEffect(() => {
+    const getSession = async () => {
+      try {
+        const response = await fetch("/api/auth/session");
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          setSession(data.user);
+        }
+      } catch (error) {
+        console.error("Session error:", error);
+      }
+    };
+
+    getSession();
+  }, []);
+  const handleViewDetails = (request) => {
+    setSelectedRequest(request);
+    setShowDetails(true);
+  };
+  const handleRejectRequest = (request) => {
+    setRequests((prev) =>
+      prev.filter((item) => item.id !== request.id)
+    );
+  };
+  const handleCompleteJob = (job) => {
+    setAcceptedJobs((prev) =>
+      prev.filter((item) => item.id !== job.id)
+    );
+
+    setCompletedJobs((prev) => [
+      ...prev,
+      {
+        ...job,
+        status: "Completed",
+      },
+    ]);
+  };
   return (
     <>
-    <div className={styles.page}>
+      <div className={styles.page}>
 
-      <div className={styles.content}>
-        {/* Greeting row */}
-        <div className={styles.greetingRow}>
-          <div>
-            <h1 className={styles.greeting}>Good Morning, Rahul 👋</h1>
-            <p className={styles.greetingSub}>
-              Here&apos;s what&apos;s happening with your services today.
-            </p>
+        <div className={styles.content}>
+          {/* Greeting row */}
+          <div className={styles.greetingRow}>
+            <div>
+              <h1 className={styles.greeting}>
+                Good Morning, {session?.name || "Provider"} 👋
+              </h1>
+              <p className={styles.greetingSub}>
+                Here&apos;s what&apos;s happening with your services today.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              className={styles.onlineToggle}
+              onClick={() => setOnline((v) => !v)}
+            >
+              <span
+                className={styles.onlineDot}
+                style={{ background: online ? "#22C55E" : "#A1A1AA" }}
+              />
+              {online ? "Online" : "Offline"}
+              <ChevronDown size={16} />
+            </button>
           </div>
 
-          <button
-            type="button"
-            className={styles.onlineToggle}
-            onClick={() => setOnline((v) => !v)}
-          >
-            <span
-              className={styles.onlineDot}
-              style={{ background: online ? "#22C55E" : "#A1A1AA" }}
-            />
-            {online ? "Online" : "Offline"}
-            <ChevronDown size={16} />
-          </button>
-        </div>
-
-        {/* Stat cards */}
-        <div className={styles.statGrid}>
-          {STATS.map((s) => (
-            <StatCard key={s.id} stat={s} />
-          ))}
-        </div>
-
-        {/* Main grid */}
-        <div className={styles.mainGrid}>
-          {/* Left: requests */}
-          <div className={styles.leftCol}>
-            <div className={styles.panel}>
-              <div className={styles.panelHead}>
-                <span className={styles.panelTitle}>New Service Requests</span>
-                <button type="button" className={styles.viewAllBtn}>
-                  View All <ChevronRight size={15} />
-                </button>
-              </div>
-
-              <div className={styles.requestList}>
-                {REQUESTS.map((r) => (
-                  <RequestCard key={r.id} request={r} />
-                ))}
-              </div>
-            </div>
+          {/* Stat cards */}
+          <div className={styles.statGrid}>
+            {STATS.map((s) => (
+              <StatCard key={s.id} stat={s} />
+            ))}
           </div>
 
-          {/* Right: sidebar */}
-          <div className={styles.rightCol}>
-            <div className={styles.panel}>
-              <div className={styles.panelHead}>
-                <span className={styles.panelTitle}>Today&apos;s Schedule</span>
-                <button type="button" className={styles.viewAllLink}>
-                  View All
-                </button>
-              </div>
-              <div className={styles.scheduleList}>
-                {SCHEDULE.map((s) => (
-                  <ScheduleItem key={s.id} item={s} />
-                ))}
+          {/* Main grid */}
+          <div className={styles.mainGrid}>
+            {/* Left: requests */}
+            <div className={styles.leftCol}>
+              <div className={styles.panel}>
+                <div className={styles.panelHead}>
+                  <span className={styles.panelTitle}>New Service Requests</span>
+                  <button type="button" className={styles.viewAllBtn}>
+                    View All <ChevronRight size={15} />
+                  </button>
+                </div>
+
+                <div className={styles.requestList}>
+                  {requests.map((r) => (
+                    <RequestCard
+                      key={r.id}
+                      request={r}
+                      onAccept={handleAcceptRequest}
+                      onReject={handleRejectRequest}
+                      onViewDetails={handleViewDetails}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className={styles.panel}>
-              <div className={styles.panelHead}>
-                <span className={styles.panelTitle}>Recent Reviews</span>
-                <button type="button" className={styles.viewAllLink}>
-                  View All
-                </button>
+            {/* Right: sidebar */}
+            <div className={styles.rightCol}>
+              <div className={styles.panel}>
+                <div className={styles.panelHead}>
+                  <span className={styles.panelTitle}>Today&apos;s Schedule</span>
+                  <button type="button" className={styles.viewAllLink}>
+                    View All
+                  </button>
+                </div>
+                <div className={styles.scheduleList}>
+                  {SCHEDULE.map((s) => (
+                    <ScheduleItem key={s.id} item={s} />
+                  ))}
+                </div>
               </div>
-              <div className={styles.reviewList}>
-                {REVIEWS.map((r) => (
-                  <ReviewItem key={r.id} review={r} />
-                ))}
-              </div>
-            </div>
 
-            <div className={styles.tipBanner}>
-              <span className={styles.tipIconWrap}>
-                <Shield size={20} color="#FFFFFF" />
-              </span>
-              <div>
-                <div className={styles.tipTitle}>Keep Your Rating High!</div>
-                <p className={styles.tipText}>
-                  Good reviews bring more customers and more earnings.
-                </p>
-                <button type="button" className={styles.tipLink}>
-                  View Tips <ChevronRight size={14} />
-                </button>
+              <div className={styles.panel}>
+                <div className={styles.panelHead}>
+                  <span className={styles.panelTitle}>Recent Reviews</span>
+                  <button type="button" className={styles.viewAllLink}>
+                    View All
+                  </button>
+                </div>
+                <div className={styles.reviewList}>
+                  {REVIEWS.map((r) => (
+                    <ReviewItem key={r.id} review={r} />
+                  ))}
+                </div>
+              </div>
+
+              <div className={styles.tipBanner}>
+                <span className={styles.tipIconWrap}>
+                  <Shield size={20} color="#FFFFFF" />
+                </span>
+                <div>
+                  <div className={styles.tipTitle}>Keep Your Rating High!</div>
+                  <p className={styles.tipText}>
+                    Good reviews bring more customers and more earnings.
+                  </p>
+                  <button type="button" className={styles.tipLink}>
+                    View Tips <ChevronRight size={14} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </>
   );
 }

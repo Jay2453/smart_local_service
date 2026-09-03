@@ -385,7 +385,7 @@ const Register = () => {
                   <label>Full Name</label>
                   <div className="input-wrapper">
                     <FiUser className="input-icon" />
-                    <input type="text" placeholder="username" value={FormData.name} onChange={handleChange} />
+                    <input type="text" name="name" placeholder="username" value={FormData.name} onChange={handleChange} />
                   </div>
                 </div>
 
@@ -545,7 +545,7 @@ const Register = () => {
                   <div className="form-group full-width">
                     <div className="personalinfo section-header">
                       <label>
-                        <FiMapPin className="section-icon" /> Address
+                        <FiMapPin className="section-icon" /> Service Address
                       </label>
                     </div>
                     <div className="input-wrapper">
