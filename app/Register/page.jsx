@@ -499,12 +499,12 @@ const Register = () => {
                       <span className="input-emoji">🛠️</span>
                       <select value={FormData.Profession} name='Profession' onChange={handleChange}>
                         <option>Select profession</option>
-                        <option value="Plumbing">Plumbing</option>
-                        <option value="Electrical">Electrical</option>
-                        <option value="Carpentry">Carpentry</option>
-                        <option value="Painting">Painting</option>
-                        <option value="Pest control">Pest Control</option>
-                        <option value="ApplianceRepair">Appliance Repair</option>
+                        <option value="plumbing">Plumbing</option>
+                        <option value="electrical">Electrical</option>
+                        <option value="carpentry">Carpentry</option>
+                        <option value="painting">Painting</option>
+                        <option value="pest">Pest Control</option>
+                        <option value="appliance">Appliance Repair</option>
                       </select>
                     </div>
                   </div>

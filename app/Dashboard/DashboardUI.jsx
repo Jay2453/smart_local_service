@@ -24,7 +24,7 @@ import NotificationBanner from "../../components/NotificationBanner/Notification
 const SERVICES = [
   {
     id: "carpentry",
-    name: "Carpentry",
+    name: "carpentry",
     icon: Hammer,
     iconBg: "#EAF0FB",
     iconColor: "#3B5EDB",
@@ -39,7 +39,7 @@ const SERVICES = [
   },
   {
     id: "electrical",
-    name: "Electrical",
+    name: "electrical",
     icon: Zap,
     iconBg: "#FDF3DC",
     iconColor: "#E3A008",
@@ -55,7 +55,7 @@ const SERVICES = [
   },
   {
     id: "appliance",
-    name: "Appliance Repair",
+    name: "appliance",
     icon: WashingMachine,
     iconBg: "#F1EEFC",
     iconColor: "#7C5CE0",
@@ -70,7 +70,7 @@ const SERVICES = [
   },
   {
     id: "plumbing",
-    name: "Plumbing",
+    name: "plumbing",
     icon: Droplets,
     iconBg: "#E7F5EE",
     iconColor: "#1F8A55",
@@ -86,7 +86,7 @@ const SERVICES = [
   },
   {
     id: "pest",
-    name: "Pest Control",
+    name: "pest",
     icon: Bug,
     iconBg: "#FCE9EE",
     iconColor: "#D6396B",
@@ -101,7 +101,7 @@ const SERVICES = [
   },
   {
     id: "painting",
-    name: "Painting",
+    name: "painting",
     icon: PaintRoller,
     iconBg: "#EFEEFC",
     iconColor: "#5B4FCF",
@@ -336,75 +336,56 @@ export default function BookService() {
     );
   }
 
-  const handleBookService = () => {
-  if (!FormData.address.trim()) {
-    showNotification(
-      "Please enter your service address.",
-      "error"
+  const handleBookService = async () => {
+    
+    // booking API logic left
+
+    if (!FormData.address.trim()) {
+      showNotification(
+        "Please enter your service address.",
+        "error"
+      );
+      return;
+    }
+
+    if (!preferredDate) {
+      showNotification(
+        "Please select your preferred date.",
+        "error"
+      );
+      setShowDateTimePicker(true);
+      return;
+    }
+
+    if (!preferredTime) {
+      showNotification(
+        "Please select your preferred time.",
+        "error"
+      );
+      setShowDateTimePicker(true);
+      return;
+    }
+
+    const missingProblem = selectedServices.find(
+      (service) => !problemChoice[service.id]
     );
-    return;
-  }
 
-  if (!preferredDate) {
-    showNotification(
-      "Please select your preferred date.",
-      "error"
-    );
-    setShowDateTimePicker(true);
-    return;
-  }
+    if (missingProblem) {
+      showNotification(
+        `Please select a problem for ${missingProblem.name}.`,
+        "error"
+      );
+      return;
+    }
 
-  if (!preferredTime) {
-    showNotification(
-      "Please select your preferred time.",
-      "error"
-    );
-    setShowDateTimePicker(true);
-    return;
-  }
-
-  const missingProblem = selectedServices.find(
-    (service) => !problemChoice[service.id]
-  );
-
-  if (missingProblem) {
-    showNotification(
-      `Please select a problem for ${missingProblem.name}.`,
-      "error"
-    );
-    return;
-  }
-
-  if (!description.trim()) {
-    showNotification(
-      "Please describe your issue.",
-      "error"
-    );
-    return;
-  }
-
-  showNotification(
-    "All details are filled. Booking can proceed!",
-    "success"
-  );
-
-  console.log("Booking Data:", {
-    address: FormData.address,
-    latitude: FormData.latitude,
-    longitude: FormData.longitude,
-    services: selectedServices.map((service) => ({
-      id: service.id,
-      name: service.name,
-      price: service.price,
-      problem: problemChoice[service.id],
-    })),
-    preferredDate,
-    preferredTime,
-    description,
-    photos,
-    total,
-  });
-};
+    if (!description.trim()) {
+      showNotification(
+        "Please describe your issue.",
+        "error"
+      );
+      return;
+    }
+  };
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
