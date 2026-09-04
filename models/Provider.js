@@ -44,6 +44,31 @@ const ProviderSchema = new mongoose.Schema(
             enum: ["customer", "serviceprovider"],
             required: true,
         },
+        latitude: {
+            type: Number,
+            default: null,
+        },
+        longitude: {
+            type: Number,
+            default: null,
+        },
+        isOnline: {
+            type: Boolean,
+            default: true,
+        },
+        verificationStatus: {
+            type: String,
+            enum: ["pending", "verified", "rejected"],
+            default: "pending",
+        },
+        rating: {
+            type: Number,
+            default: 5.0,
+        },
+        reviewCount: {
+            type: Number,
+            default: 0,
+        },
     },
     {
         timestamps: true,

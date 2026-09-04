@@ -11,7 +11,7 @@ export default function NotFound() {
                 <h2>Page Not Found</h2>
 
                 <p>
-                    Sorry, the page you're looking for doesn't exist
+                    Sorry, the page you&apos;re looking for doesn&apos;t exist
                     or may have been moved.
                 </p>
 

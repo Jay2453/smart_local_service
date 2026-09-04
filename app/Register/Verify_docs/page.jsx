@@ -38,21 +38,54 @@ export default function Page() {
       type,
     });
   };
+  const [submitting, setSubmitting] = useState(false);
+
   const handleVerify = async () => {
     if (!documentType) {
       showNotification("Please select a valid document type.");
+      return;
+    }
+    if (!documentFile) {
+      showNotification("Please upload a valid government document.");
       return;
     }
     if (!selfie) {
       showNotification("Please click a live selfie.");
       return;
     }
-    if (!documentFile) {
-      showNotification("Please upload a valid govenment document.");
-      return;
+
+    try {
+      setSubmitting(true);
+      showNotification("Submitting verification documents...", "success");
+
+      const formPayload = new FormData();
+      formPayload.append("documentType", documentType);
+      formPayload.append("document", documentFile);
+      formPayload.append("selfie", selfie);
+
+      const res = await fetch("/api/provider/verify-docs", {
+        method: "POST",
+        body: formPayload,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        showNotification(data.message || "Failed to submit documents.");
+        setSubmitting(false);
+        return;
+      }
+
+      showNotification(data.message || "Verification submitted successfully!", "success");
+      setTimeout(() => {
+        window.location.href = "/Serviceprovider";
+      }, 1200);
+
+    } catch (err) {
+      console.error("Verification upload error:", err);
+      showNotification("Something went wrong during submission.");
+      setSubmitting(false);
     }
-    return;
-  }
+  };
   // Start camera
   const startCamera = async () => {
     try {
@@ -440,9 +473,10 @@ export default function Page() {
               type="button"
               className="submit-btn"
               onClick={handleVerify}
+              disabled={submitting}
             >
 
-              Submit Verification
+              {submitting ? "Submitting..." : "Submit Verification"}
 
               <ArrowRight size={22} />
 

@@ -13,7 +13,7 @@ export default function About() {
             <div className="about-left">
 
                 <h1 className="about-heading">
-                    We're on a Mission to
+                    We&apos;re on a Mission to
                     <br />
                     Make Local Services
                     <br />

@@ -2,10 +2,6 @@ import React from 'react';
 import './service.css';
 import Image from 'next/image';
 import {
-  ArrowRight, Star, Search,
-  MapPin,
-  Grid2x2,
-  ChevronDown,
   Wrench,
   Zap,
   Hammer,

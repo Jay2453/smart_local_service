@@ -236,7 +236,7 @@ export default function Login({ closeLogin, onLoginSuccess }) {
 
                 <p className="signup-text">
 
-                    Don't have an account?
+                    Don&apos;t have an account?
 
                     <button
                         type="button"

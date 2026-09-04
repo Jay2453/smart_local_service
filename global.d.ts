@@ -1,5 +1,5 @@
 declare namespace JSX {
   interface IntrinsicElements {
-    "lord-icon": any;
+    "lord-icon": Record<string, unknown>;
   }
 }

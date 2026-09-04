@@ -136,7 +136,7 @@ export default function OtpVerifyModal({
             </span>
           </div>
           <div className={styles.resendWrap}>
-            <span className={styles.resendLabel}>Didn't receive OTP? </span>
+            <span className={styles.resendLabel}>Didn&apos;t receive OTP? </span>
             <button
               className={styles.resendBtn}
               onClick={handleResend}

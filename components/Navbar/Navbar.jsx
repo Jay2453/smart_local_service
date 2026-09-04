@@ -50,7 +50,27 @@ const Navbar = () => {
     }
   };
   useEffect(() => {
-    getSession();
+    let active = true;
+    const fetchSession = async () => {
+      try {
+        const response = await fetch("/api/auth/session");
+        if (!response.ok) {
+          if (active) setSession(null);
+          return;
+        }
+        const data = await response.json();
+        if (active) {
+          setSession(data.success ? data.user : null);
+        }
+      } catch (error) {
+        console.error("Session error:", error);
+        if (active) setSession(null);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+
+    fetchSession();
 
     const handleServiceAction = (event) => {
       const { type } = event.detail;
@@ -80,6 +100,7 @@ const Navbar = () => {
     window.addEventListener("service-action", handleServiceAction);
 
     return () => {
+      active = false;
       window.removeEventListener("service-action", handleServiceAction);
     };
   }, [session]);

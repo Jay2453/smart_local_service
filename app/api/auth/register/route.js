@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { createSession } from "@/lib/auth";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
 import Provider from "@/models/Provider";
@@ -15,6 +16,8 @@ export async function POST(request) {
             Proffesion,
             Experience,
             ServiceRadius,
+            latitude,
+            longitude,
         } = await request.json();
 
         if (
@@ -57,6 +60,8 @@ export async function POST(request) {
                 Proffesion,
                 Experience,
                 ServiceRadius,
+                latitude: latitude ? Number(latitude) : null,
+                longitude: longitude ? Number(longitude) : null,
                 role,
             });
 
@@ -70,7 +75,14 @@ export async function POST(request) {
             });
         }
 
-        return NextResponse.json(
+        const token = await createSession({
+            id: createdUser._id,
+            name: createdUser.name,
+            phone: createdUser.phone,
+            role: createdUser.role,
+        });
+
+        const response = NextResponse.json(
             {
                 success: true,
                 message: "Registration successful",
@@ -83,6 +95,18 @@ export async function POST(request) {
             },
             { status: 201 }
         );
+
+        response.cookies.set({
+            name: "smartserve_session",
+            value: token,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 60 * 60 * 24 * 7,
+            path: "/",
+        });
+
+        return response;
 
     } catch (error) {
         console.error("Registration error:", error);

@@ -314,6 +314,8 @@ const Register = () => {
           Proffesion: FormData.Profession,
           Experience: FormData.Experience,
           ServiceRadius: FormData.ServiceRadius,
+          latitude: FormData.latitude,
+          longitude: FormData.longitude,
         }),
       });
 

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import {
   Hammer,
   Zap,
@@ -16,6 +16,8 @@ import {
   Plus,
   Camera,
   ChevronRight,
+  Star,
+  Phone,
 } from "lucide-react";
 
 import styles from "./customer.module.css";
@@ -237,11 +239,56 @@ export default function BookService() {
   const fileInputRef = useRef(null);
 
 
+  const [activeView, setActiveView] = useState("book");
+  const [myBookings, setMyBookings] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [reviewForm, setReviewForm] = useState({
+    bookingId: null,
+    rating: 5,
+    comment: "",
+  });
+
   const [Notification, setNotification] = useState({
     show: false,
     message: "",
     type: "error",
   });
+
+  const fetchMyBookings = useCallback(async () => {
+    try {
+      const res = await fetch("/api/bookings");
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.success && Array.isArray(data.bookings)) {
+        setMyBookings(data.bookings);
+      }
+    } catch (err) {
+      console.error("Fetch my bookings error:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    const load = async () => {
+      try {
+        const res = await fetch("/api/bookings");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (isMounted && data.success && Array.isArray(data.bookings)) {
+          setMyBookings(data.bookings);
+        }
+      } catch (err) {
+        console.error("Fetch my bookings error:", err);
+      }
+    };
+
+    load();
+    const interval = setInterval(load, 8000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   const formatDate = (dateString) => {
     if (!dateString) return "Select date";
@@ -337,9 +384,6 @@ export default function BookService() {
   }
 
   const handleBookService = async () => {
-    
-    // booking API logic left
-
     if (!FormData.address.trim()) {
       showNotification(
         "Please enter your service address.",
@@ -366,6 +410,14 @@ export default function BookService() {
       return;
     }
 
+    if (selectedServices.length === 0) {
+      showNotification(
+        "Please select at least one service.",
+        "error"
+      );
+      return;
+    }
+
     const missingProblem = selectedServices.find(
       (service) => !problemChoice[service.id]
     );
@@ -384,6 +436,126 @@ export default function BookService() {
         "error"
       );
       return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      showNotification("Submitting your booking request...", "success");
+
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          address: FormData.address,
+          latitude: FormData.latitude,
+          longitude: FormData.longitude,
+          preferredDate,
+          preferredTime,
+          selectedServices,
+          problemChoice,
+          description,
+          photos: photos.map((p) => p.label),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        showNotification(data.message || "Failed to place booking.", "error");
+        setIsSubmitting(false);
+        return;
+      }
+
+      showNotification(
+        data.message || "Service booked successfully!",
+        "success"
+      );
+
+      // Clear selection
+      setSelectedIds([]);
+      setDescription("");
+      setPhotos([]);
+      setProblemChoice({});
+      setPreferredDate("");
+      setPreferredTime("");
+      setIsSubmitting(false);
+
+      // Refresh bookings and view them
+      await fetchMyBookings();
+      setActiveView("my_bookings");
+
+    } catch (err) {
+      console.error("Booking error:", err);
+      showNotification("Something went wrong. Please try again.", "error");
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCancelBooking = async (bookingId) => {
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}/cancel`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason: "Cancelled by customer" }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showNotification(data.message || "Failed to cancel booking.", "error");
+        return;
+      }
+      showNotification("Booking cancelled successfully.", "success");
+      await fetchMyBookings();
+    } catch (err) {
+      console.error("Cancel error:", err);
+      showNotification("Failed to cancel booking.", "error");
+    }
+  };
+
+  const handlePayment = async (bookingId, method = "cash") => {
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}/payment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ method }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showNotification(data.message || "Failed to confirm payment.", "error");
+        return;
+      }
+      showNotification("Payment confirmed successfully!", "success");
+      await fetchMyBookings();
+    } catch (err) {
+      console.error("Payment error:", err);
+      showNotification("Failed to process payment.", "error");
+    }
+  };
+
+  const handleSubmitReview = async (bookingId) => {
+    if (!reviewForm.rating) {
+      showNotification("Please select a star rating.", "error");
+      return;
+    }
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}/review`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rating: reviewForm.rating,
+          comment: reviewForm.comment,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showNotification(data.message || "Failed to submit review.", "error");
+        return;
+      }
+      showNotification("Thank you for your review!", "success");
+      setReviewForm({ bookingId: null, rating: 5, comment: "" });
+      await fetchMyBookings();
+    } catch (err) {
+      console.error("Review error:", err);
+      showNotification("Failed to submit review.", "error");
     }
   };
 
@@ -531,10 +703,303 @@ export default function BookService() {
         <div className={styles.grid}>
 
           <div className={styles.card}>
+            <div className={styles.pillRow} style={{ marginTop: 0, marginBottom: "24px" }}>
+              <Pill
+                label="Book a Service"
+                active={activeView === "book"}
+                onClick={() => setActiveView("book")}
+              />
+              <Pill
+                label={`My Bookings ${myBookings.length > 0 ? `(${myBookings.length})` : ""}`}
+                active={activeView === "my_bookings"}
+                onClick={() => setActiveView("my_bookings")}
+              />
+            </div>
 
-            <h1 className={styles.title}>
-              Book a Service
-            </h1>
+            {activeView === "my_bookings" ? (
+              <div>
+                <h1 className={styles.title}>My Service Bookings</h1>
+                <p className={styles.subtitle}>
+                  Track your service requests, assigned professionals, and completion status.
+                </p>
+
+                {myBookings.length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "48px 20px" }}>
+                    <p style={{ color: "var(--text-muted)", fontSize: "14.5px", marginBottom: "18px" }}>
+                      You haven&apos;t booked any services yet.
+                    </p>
+                    <button
+                      type="button"
+                      className={styles.submitBtn}
+                      style={{ maxWidth: "240px", margin: "0 auto", justifyContent: "center" }}
+                      onClick={() => setActiveView("book")}
+                    >
+                      Book a Service Now
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+                    {myBookings.map((b) => {
+                      const statusMap = {
+                        pending: { bg: "#FDF3DC", color: "#B45309", label: "Searching for Providers..." },
+                        accepted: { bg: "#E9F1FE", color: "#1D4ED8", label: `Accepted by ${b.assignedProviderId?.name || "Provider"}` },
+                        in_progress: { bg: "#F1EEFC", color: "#6D28D9", label: "Service In Progress" },
+                        completed: { bg: "#E7F5EE", color: "#15803D", label: "Completed" },
+                        cancelled: { bg: "#FCE9EE", color: "#BE123C", label: "Cancelled" },
+                      };
+                      const st = statusMap[b.status] || statusMap.pending;
+
+                      return (
+                        <div
+                          key={b._id}
+                          style={{
+                            border: "1px solid var(--border)",
+                            borderRadius: "14px",
+                            padding: "20px",
+                            background: "#ffffff",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "flex-start",
+                              flexWrap: "wrap",
+                              gap: "10px",
+                              marginBottom: "12px",
+                            }}
+                          >
+                            <div>
+                              <h3 style={{ fontSize: "16px", fontWeight: "700", margin: "0 0 4px" }}>
+                                {b.services?.map((s) => s.name).join(", ") || "Service Request"}
+                              </h3>
+                              <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>
+                                Booking #{b._id.slice(-6)} • {b.preferredDate} ({b.preferredTime})
+                              </div>
+                            </div>
+
+                            <span
+                              style={{
+                                background: st.bg,
+                                color: st.color,
+                                fontSize: "12.5px",
+                                fontWeight: "600",
+                                padding: "4px 12px",
+                                borderRadius: "999px",
+                              }}
+                            >
+                              {st.label}
+                            </span>
+                          </div>
+
+                          <div style={{ fontSize: "13.5px", color: "var(--text-sub)", margin: "8px 0" }}>
+                            <strong>Address:</strong> {b.address}
+                          </div>
+
+                          <div style={{ fontSize: "13.5px", color: "var(--text-sub)", margin: "8px 0" }}>
+                            <strong>Issue:</strong> {b.description}
+                          </div>
+
+                          {b.assignedProviderId && (
+                            <div
+                              style={{
+                                background: "var(--green-bg-soft)",
+                                border: "1px solid #cdeedc",
+                                borderRadius: "10px",
+                                padding: "12px 16px",
+                                marginTop: "12px",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                flexWrap: "wrap",
+                                gap: "8px",
+                              }}
+                            >
+                              <div>
+                                <div style={{ fontWeight: "600", fontSize: "13.5px" }}>
+                                  Assigned Provider: {b.assignedProviderId.name}
+                                </div>
+                                <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>
+                                  ⭐ {b.assignedProviderId.rating || "5.0"} ({b.assignedProviderId.reviewCount || 0} reviews)
+                                </div>
+                              </div>
+                              {b.assignedProviderId.phone && (
+                                <a
+                                  href={`tel:${b.assignedProviderId.phone}`}
+                                  style={{
+                                    fontSize: "13px",
+                                    fontWeight: "600",
+                                    color: "var(--green)",
+                                    textDecoration: "none",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "4px",
+                                  }}
+                                >
+                                  <Phone size={14} /> Call {b.assignedProviderId.phone}
+                                </a>
+                              )}
+                            </div>
+                          )}
+
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              marginTop: "16px",
+                              paddingTop: "14px",
+                              borderTop: "1px solid var(--border-soft)",
+                              flexWrap: "wrap",
+                              gap: "10px",
+                            }}
+                          >
+                            <div style={{ fontSize: "15px", fontWeight: "700" }}>
+                              Total: <span style={{ color: "var(--green)" }}>₹{b.estimatedTotal}</span>
+                            </div>
+
+                            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                              {(b.status === "pending" || b.status === "accepted") && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleCancelBooking(b._id)}
+                                  style={{
+                                    background: "none",
+                                    border: "1px solid #FCA5A5",
+                                    color: "#DC2626",
+                                    padding: "6px 12px",
+                                    borderRadius: "8px",
+                                    fontSize: "13px",
+                                    fontWeight: "600",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  Cancel Booking
+                                </button>
+                              )}
+
+                              {b.status === "completed" && (
+                                <>
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePayment(b._id, "cash")}
+                                    style={{
+                                      background: "none",
+                                      border: "1px solid #86EFAC",
+                                      color: "#16A34A",
+                                      padding: "6px 12px",
+                                      borderRadius: "8px",
+                                      fontSize: "13px",
+                                      fontWeight: "600",
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    Confirm Payment (₹{b.estimatedTotal})
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setReviewForm((prev) => ({
+                                        ...prev,
+                                        bookingId: prev.bookingId === b._id ? null : b._id,
+                                      }))
+                                    }
+                                    style={{
+                                      background: "var(--green)",
+                                      border: "none",
+                                      color: "#ffffff",
+                                      padding: "6px 14px",
+                                      borderRadius: "8px",
+                                      fontSize: "13px",
+                                      fontWeight: "600",
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    {reviewForm.bookingId === b._id ? "Close Review" : "Leave Review"}
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Inline Review Form if opened */}
+                          {reviewForm.bookingId === b._id && (
+                            <div
+                              style={{
+                                marginTop: "14px",
+                                padding: "16px",
+                                background: "#F9FAFB",
+                                border: "1px solid var(--border)",
+                                borderRadius: "10px",
+                              }}
+                            >
+                              <h4 style={{ margin: "0 0 10px", fontSize: "14px", fontWeight: "700" }}>
+                                Rate Your Service
+                              </h4>
+
+                              <div style={{ display: "flex", gap: "6px", alignItems: "center", marginBottom: "12px" }}>
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <button
+                                    key={star}
+                                    type="button"
+                                    onClick={() =>
+                                      setReviewForm((prev) => ({ ...prev, rating: star }))
+                                    }
+                                    style={{ background: "none", border: "none", cursor: "pointer", padding: "2px" }}
+                                  >
+                                    <Star
+                                      size={22}
+                                      fill={star <= reviewForm.rating ? "#F5A524" : "none"}
+                                      color={star <= reviewForm.rating ? "#F5A524" : "#D1D5DB"}
+                                    />
+                                  </button>
+                                ))}
+                                <span style={{ marginLeft: "8px", fontSize: "14px", fontWeight: "600" }}>
+                                  {reviewForm.rating} / 5
+                                </span>
+                              </div>
+
+                              <textarea
+                                rows={3}
+                                placeholder="Write feedback about the service..."
+                                value={reviewForm.comment}
+                                onChange={(e) =>
+                                  setReviewForm((prev) => ({ ...prev, comment: e.target.value }))
+                                }
+                                className={styles.textarea}
+                                style={{ width: "100%", marginBottom: "10px" }}
+                              />
+
+                              <button
+                                type="button"
+                                onClick={() => handleSubmitReview(b._id)}
+                                style={{
+                                  background: "var(--green)",
+                                  color: "#ffffff",
+                                  border: "none",
+                                  borderRadius: "8px",
+                                  padding: "8px 16px",
+                                  fontSize: "13px",
+                                  fontWeight: "600",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Submit Review
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div>
+                <h1 className={styles.title}>
+                  Book a Service
+                </h1>
 
             <p className={styles.subtitle}>
               Select the service(s) you need and tell us
@@ -906,45 +1371,105 @@ export default function BookService() {
               type="button"
               disabled={
                 selectedServices.length === 0 ||
-                !FormData.address
+                !FormData.address ||
+                isSubmitting
               }
               className={styles.submitBtn}
               onClick={handleBookService}
             >
-              Book Service
+              {isSubmitting ? "Booking Service..." : "Book Service"}
               <ChevronRight size={18} />
             </button>
 
           </div>
+        )}
+
+      </div>
 
           <div className={styles.summaryCard}>
+            {activeView === "my_bookings" ? (
+              <div>
+                <div className={styles.summaryHeader}>
+                  <Calendar size={20} className={styles.greenIcon} />
+                  <span className={styles.summaryHeaderTitle}>Bookings Overview</span>
+                </div>
 
-            <div
-              className={styles.summaryHeader}
-            >
+                <div className={styles.summaryCount}>
+                  Total Records ({myBookings.length})
+                </div>
 
-              <Calendar
-                size={20}
-                className={styles.greenIcon}
-              />
+                <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "10px", fontSize: "14px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}>
+                    <span style={{ color: "var(--text-muted)" }}>Active / In Progress</span>
+                    <strong style={{ color: "#3B82F6" }}>
+                      {myBookings.filter((b) => ["pending", "accepted", "in_progress"].includes(b.status)).length}
+                    </strong>
+                  </div>
 
-              <span
-                className={
-                  styles.summaryHeaderTitle
-                }
-              >
-                Booking Summary
-              </span>
+                  <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}>
+                    <span style={{ color: "var(--text-muted)" }}>Completed</span>
+                    <strong style={{ color: "#1E9E5A" }}>
+                      {myBookings.filter((b) => b.status === "completed").length}
+                    </strong>
+                  </div>
 
-            </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}>
+                    <span style={{ color: "var(--text-muted)" }}>Cancelled</span>
+                    <strong style={{ color: "#EF4444" }}>
+                      {myBookings.filter((b) => b.status === "cancelled").length}
+                    </strong>
+                  </div>
+                </div>
 
-            <div
-              className={styles.summaryCount}
-            >
-              Selected Services (
-              {selectedServices.length}
-              )
-            </div>
+                <div className={styles.divider} />
+
+                <div className={styles.secureBox}>
+                  <ShieldCheck size={22} className={styles.greenIcon} />
+                  <div>
+                    <div className={styles.secureTitle}>Verified Marketplace</div>
+                    <div className={styles.secureText}>
+                      All professionals are background-checked and identity-verified.
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  className={styles.submitBtn}
+                  style={{ width: "100%", justifyContent: "center", marginTop: "18px" }}
+                  onClick={() => setActiveView("book")}
+                >
+                  Book Another Service
+                </button>
+              </div>
+            ) : (
+              <>
+                <div
+                  className={styles.summaryHeader}
+                >
+
+                  <Calendar
+                    size={20}
+                    className={styles.greenIcon}
+                  />
+
+                  <span
+                    className={
+                      styles.summaryHeaderTitle
+                    }
+                  >
+                    Booking Summary
+                  </span>
+
+                </div>
+
+                <div
+                  className={styles.summaryCount}
+                >
+                  Selected Services (
+                  {selectedServices.length}
+                  )
+                </div>
 
             {selectedServices.length === 0 && (
 
@@ -1275,6 +1800,8 @@ export default function BookService() {
                 </button>
 
               </div>
+            )}
+              </>
             )}
           </div>
 
