@@ -61,10 +61,4 @@ New features, improvements, and production-ready marketplace functionality are b
 
 ---
 
-## 💻 Getting Started
 
-### Clone the repository
-
-```bash
-git clone https://github.com/YOUR-USERNAME/smartserve.git
-cd smartserve
