@@ -1,39 +1,70 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SmartServe 🚀
 
-## Getting Started
+### Smart Local Services Marketplace
 
-First, run the development server:
+SmartServe is a web platform that connects customers with local service providers for everyday home services.
+
+Customers can discover services, submit their requirements, choose a preferred date and time, and connect with suitable service providers — all from one platform.
+
+---
+
+## ✨ Features
+
+- 🔐 Secure user authentication
+- 📱 Customer and service-provider accounts
+- 🛠️ Multiple local service categories
+- 📍 Location-based service requests
+- 📅 Preferred date and time selection
+- 📝 Problem and requirement description
+- 👨‍🔧 Service provider dashboard
+- 📋 Booking and request management
+- ⭐ Reviews and ratings
+- 🔔 Notifications
+- 🛡️ Provider verification
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend**
+- Next.js
+- React
+- JavaScript
+- CSS
+
+**Backend**
+- Next.js API Routes
+- Node.js
+- MongoDB
+- Mongoose
+
+**Authentication & Security**
+- JWT
+- bcryptjs
+- OTP Verification
+
+---
+
+## 🎯 Vision
+
+SmartServe aims to make finding and booking reliable local service professionals simple, fast, and convenient.
+
+The platform is designed to eventually support multiple service categories and expand across different locations.
+
+---
+
+## 🚧 Project Status
+
+SmartServe is currently under active development.
+
+New features, improvements, and production-ready marketplace functionality are being added continuously.
+
+---
+
+## 💻 Getting Started
+
+### Clone the repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
-# smart_local_service
-smart local service project
->>>>>>> 17b7f22c045035ad8a17224ebbe2e8172fcd23fd
+git clone https://github.com/YOUR-USERNAME/smartserve.git
+cd smartserve
