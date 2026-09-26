@@ -4,22 +4,25 @@ import OtpVerifyModal from '../../components/OTPmodal/Otpverifymodal';
 import NotificationBanner from '../../components/NotificationBanner/NotificationBanner';
 import './register.css';
 import {
-  FiUser,
-  FiPhone,
-  FiMail,
-  FiLock,
-  FiEye,
-  FiEyeOff,
-  FiMapPin,
-  FiHome,
-  FiArrowRight,
-  FiBriefcase,
-  FiStar,
-  FiTarget,
-  FiChevronUp,
-  FiChevronDown,
-  FiCheckCircle,
-} from 'react-icons/fi';
+  User,
+  Phone,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  MapPin,
+  Home,
+  ArrowRight,
+  Briefcase,
+  Star,
+  Target,
+  ChevronUp,
+  ChevronDown,
+  CheckCircle2,
+  Sparkles,
+  ShieldCheck,
+  Compass,
+} from 'lucide-react';
 
 const Register = () => {
   const [FormData, setFormData] = useState({
@@ -41,11 +44,13 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [workerDetailsOpen, setWorkerDetailsOpen] = useState(true);
   const [Showoverlay, setShowoverlay] = useState(false);
+  const [detectingLocation, setDetectingLocation] = useState(false);
   const [Notification, setNotification] = useState({
     show: false,
     message: "",
     type: "error",
   });
+
   const showNotification = (message, type = "error") => {
     setNotification({
       show: true,
@@ -53,6 +58,7 @@ const Register = () => {
       type,
     });
   };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -60,6 +66,7 @@ const Register = () => {
       [name]: value,
     }));
   };
+
   const handleOTPVerify = async (otp) => {
     try {
       const response = await fetch("/api/auth/verify-otp", {
@@ -76,19 +83,18 @@ const Register = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        showNotification(data.message);
+        showNotification(data.message || "OTP verification failed.");
         return;
       }
 
       console.log("OTP verified successfully");
-
       await handleRegistration();
-
     } catch (error) {
       console.error("OTP verification error:", error);
       showNotification("Could not verify OTP.");
     }
   };
+
   const handleResend = async () => {
     try {
       const response = await fetch("/api/auth/send-otp", {
@@ -104,17 +110,13 @@ const Register = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        showNotification(data.message);
+        showNotification(data.message || "Failed to resend OTP.");
         return;
       }
 
       if (data.otp) {
-        showNotification(
-          `Your OTP is ${data.otp}`,
-          "success"
-        );
+        showNotification(`Your OTP is ${data.otp}`, "success");
       }
-
     } catch (error) {
       console.error("RESEND OTP ERROR:", error);
       showNotification("Could not resend OTP.");
@@ -122,7 +124,6 @@ const Register = () => {
   };
 
   const handleContinue = async () => {
-    // Check form fields
     if (
       !FormData.name ||
       !FormData.phone ||
@@ -130,172 +131,138 @@ const Register = () => {
       !FormData.password ||
       !FormData.confirmpassword
     ) {
-      showNotification("Please fill in all the required fields.");
-      return;
-    }
-    if (IsServiceprovider && (!FormData.ServiceRadius || !FormData.Profession || !FormData.Experience || !FormData.address)) {
-      showNotification("Please fill in the required Service Provider Fields.");
+      showNotification("Please fill in all required fields.");
       return;
     }
 
-    // Check passwords
+    if (FormData.phone.length !== 10) {
+      showNotification("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    if (
+      IsServiceprovider &&
+      (!FormData.ServiceRadius ||
+        !FormData.Profession ||
+        !FormData.Experience ||
+        !FormData.address)
+    ) {
+      showNotification("Please complete all Service Provider fields.");
+      return;
+    }
+
     if (FormData.password !== FormData.confirmpassword) {
       showNotification("Passwords do not match.");
       return;
     }
 
     try {
-
-      // Check email and phone in database
-      const checkResponse = await fetch(
-        "/api/auth/check-registration",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: FormData.email,
-            phone: FormData.phone,
-          }),
-        }
-      );
+      const checkResponse = await fetch("/api/auth/check-registration", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: FormData.email,
+          phone: FormData.phone,
+        }),
+      });
 
       const checkData = await checkResponse.json();
 
       if (!checkResponse.ok) {
-        showNotification(checkData.message);
+        showNotification(checkData.message || "Registration check failed.");
         return;
       }
 
-      // Only now generate OTP
-      const otpResponse = await fetch(
-        "/api/auth/send-otp",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            phone: FormData.phone,
-          }),
-        }
-      );
+      const otpResponse = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phone: FormData.phone,
+        }),
+      });
 
       const otpData = await otpResponse.json();
 
       if (!otpResponse.ok) {
-        showNotification(otpData.message);
+        showNotification(otpData.message || "Failed to send OTP.");
         return;
       }
 
       if (otpData.otp) {
-        showNotification(
-          `Your OTP is ${otpData.otp}`,
-          "success"
-        );
+        showNotification(`Your OTP is ${otpData.otp}`, "success");
       }
 
-      // Open OTP modal
       setShowoverlay(true);
-
     } catch (error) {
       console.error("Continue error:", error);
       showNotification("Something went wrong. Please try again.");
     }
   };
 
- const getCurrentLocation = () => {
-
+  const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-        showNotification(
-            "Location is not supported by your browser.",
-            "error"
-        );
-        return;
+      showNotification("Location is not supported by your browser.", "error");
+      return;
     }
 
-    showNotification(
-        "Detecting your location...",
-        "success"
-    );
+    setDetectingLocation(true);
+    showNotification("Detecting your location...", "success");
 
     navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
 
-        async (position) => {
+        try {
+          const response = await fetch(
+            `/api/location/reverse-geocode?lat=${latitude}&lon=${longitude}`
+          );
 
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
+          const data = await response.json();
 
-            try {
+          if (!response.ok) {
+            showNotification(data.message || "Unable to find your address.", "error");
+            setDetectingLocation(false);
+            return;
+          }
 
-                const response = await fetch(
-                    `/api/location/reverse-geocode?lat=${latitude}&lon=${longitude}`
-                );
+          setFormData((prev) => ({
+            ...prev,
+            address: data.address,
+            latitude: latitude,
+            longitude: longitude,
+          }));
 
-                const data = await response.json();
-
-                if (!response.ok) {
-                    showNotification(
-                        data.message || "Unable to find your address.",
-                        "error"
-                    );
-                    return;
-                }
-
-                setFormData((prev) => ({
-                    ...prev,
-                    address: data.address,
-                    latitude: latitude,
-                    longitude: longitude,
-                }));
-
-                showNotification(
-                    "Location detected successfully!",
-                    "success"
-                );
-
-            } catch (error) {
-
-                console.error("Reverse geocoding error:", error);
-
-                showNotification(
-                    "Unable to get your address.",
-                    "error"
-                );
-            }
-        },
-
-        (error) => {
-            console.error("Location error:", error);
-            if (error.code === 1) {
-                showNotification(
-                    "Location permission denied. Please allow access.",
-                    "error"
-                );
-            }
-
-            else if (error.code === 2) {
-                showNotification(
-                    "Unable to detect your location.",
-                    "error"
-                );
-            }
-
-            else if (error.code === 3) {
-                showNotification(
-                    "Location request timed out.",
-                    "error"
-                );
-            }
-        },
-        {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0,
+          showNotification("Location detected successfully!", "success");
+        } catch (error) {
+          console.error("Reverse geocoding error:", error);
+          showNotification("Unable to get your address.", "error");
+        } finally {
+          setDetectingLocation(false);
         }
+      },
+      (error) => {
+        setDetectingLocation(false);
+        console.error("Location error:", error);
+        if (error.code === 1) {
+          showNotification("Location permission denied. Please allow access.", "error");
+        } else if (error.code === 2) {
+          showNotification("Unable to detect your location.", "error");
+        } else if (error.code === 3) {
+          showNotification("Location request timed out.", "error");
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
     );
-};
+  };
 
   const handleRegistration = async () => {
     try {
@@ -321,7 +288,7 @@ const Register = () => {
 
       const data = await response.json();
       if (!response.ok) {
-        showNotification(data.message);
+        showNotification(data.message || "Registration failed.");
         return;
       }
 
@@ -332,20 +299,17 @@ const Register = () => {
       } else {
         window.location.href = "/Dashboard";
       }
-
     } catch (error) {
-      console.error("Registeration failed: ", error);
-      showNotification("Something went wrong. ");
+      console.error("Registration failed: ", error);
+      showNotification("Something went wrong with registration.");
     }
   };
 
-  //////////////////////////////////////////////////
-
   return (
-    <div>
-
+    <div className="register-page-wrapper">
       {Notification.show && (
-        <NotificationBanner message={Notification.message}
+        <NotificationBanner
+          message={Notification.message}
           type={Notification.type}
           onClose={() =>
             setNotification({
@@ -353,11 +317,12 @@ const Register = () => {
               message: "",
               type: "error",
             })
-          } />
+          }
+        />
       )}
 
       {/* OTP verification module */}
-      {Showoverlay &&
+      {Showoverlay && (
         <OtpVerifyModal
           phoneNumber={`+91 ${FormData.phone}`}
           onClose={() => setShowoverlay(false)}
@@ -365,206 +330,267 @@ const Register = () => {
           IsServiceprovider={IsServiceprovider}
           onResend={handleResend}
         />
-      }
+      )}
 
-      {/* Registeration Model */}
-      <div className="masterregister">
+      <div className="register-container">
+        <div className="register-header-bar">
+          <span className="register-badge">
+            <Sparkles size={14} color="#04B204" />
+            Join SmartServe Network
+          </span>
+          <h1 className="register-main-title">Create Your Account</h1>
+          <p className="register-main-sub">
+            Join thousands of satisfied customers and verified service experts.
+          </p>
+        </div>
+
         <div className="register-layout">
-          {/* LEFT COLUMN */}
-          <div className="content">
-            <h1 className="registertitle">Create an Account</h1>
-
-            {/* Personal Information */}
-            <div className="personalinfo section-header">
-              <FiUser className="section-icon" />
-              <h2>Personal Information</h2>
+          {/* PERSONAL INFO COLUMN */}
+          <div className="register-card main-info-card">
+            <div className="card-section-heading">
+              <div className="section-icon-wrap">
+                <User size={20} color="#04B204" />
+              </div>
+              <div>
+                <h2 className="section-heading-text">Personal Information</h2>
+                <p className="section-subtext">Tell us about yourself to get started</p>
+              </div>
             </div>
-            <p className="paratext">Tell us about yourself</p>
 
-            <div className="form">
-              <div className="form-grid">
-                <div className="form-group">
-                  <label>Full Name</label>
-                  <div className="input-wrapper">
-                    <FiUser className="input-icon" />
-                    <input type="text" name="name" placeholder="username" value={FormData.name} onChange={handleChange} />
-                  </div>
+            <div className="form-grid">
+              <div className="form-group full-span">
+                <label>Full Name</label>
+                <div className="input-wrapper">
+                  <User className="input-icon" size={18} />
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter your full name"
+                    value={FormData.name}
+                    onChange={handleChange}
+                  />
                 </div>
+              </div>
 
-                <div className="form-group">
-                  <label>Mobile Number</label>
-                  <div className="input-wrapper phone-wrapper">
-                    <FiPhone className="input-icon" />
-                    <span className="country-code">+91</span>
-                    <span className="divider-line" />
-                    <input type="tel" name="phone" onChange={handleChange} value={FormData.phone} />
-                  </div>
+              <div className="form-group">
+                <label>Mobile Number</label>
+                <div className="input-wrapper phone-wrapper">
+                  <Phone className="input-icon" size={18} />
+                  <span className="country-code">+91</span>
+                  <span className="divider-line" />
+                  <input
+                    type="tel"
+                    name="phone"
+                    placeholder="10-digit number"
+                    maxLength={10}
+                    onChange={handleChange}
+                    value={FormData.phone}
+                  />
                 </div>
+              </div>
 
-                <div className="form-group">
-                  <label>Email Address</label>
-                  <div className="input-wrapper">
-                    <FiMail className="input-icon" />
-                    <input type="email" placeholder="user@gmail.com" onChange={handleChange} value={FormData.email} name="email" />
-                  </div>
+              <div className="form-group">
+                <label>Email Address</label>
+                <div className="input-wrapper">
+                  <Mail className="input-icon" size={18} />
+                  <input
+                    type="email"
+                    placeholder="name@example.com"
+                    onChange={handleChange}
+                    value={FormData.email}
+                    name="email"
+                  />
                 </div>
+              </div>
 
-                <div className="form-group">
-                  <label>Create Password</label>
-                  <div className="input-wrapper">
-                    <FiLock className="input-icon" />
-                    <input type={showPassword ? 'text' : 'password'} name='password' value={FormData.password} onChange={handleChange} />
-                    <button
-                      type="button"
-                      className="eye-btn"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <FiEye /> : <FiEyeOff />}
-                    </button>
-                  </div>
+              <div className="form-group">
+                <label>Create Password</label>
+                <div className="input-wrapper">
+                  <Lock className="input-icon" size={18} />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    placeholder="At least 6 characters"
+                    value={FormData.password}
+                    onChange={handleChange}
+                  />
+                  <button
+                    type="button"
+                    className="eye-btn"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label="Toggle password"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
+              </div>
 
-                <div className="form-group">
-                  <label>Confirm Password</label>
-                  <div className="input-wrapper">
-                    <FiLock className="input-icon" />
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      name="confirmpassword"
-                      value={FormData.confirmpassword}
-                      onChange={handleChange}
-                    />
-                    <button
-                      type="button"
-                      className="eye-btn"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    >
-                      {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
-                    </button>
-                  </div>
+              <div className="form-group">
+                <label>Confirm Password</label>
+                <div className="input-wrapper">
+                  <Lock className="input-icon" size={18} />
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    name="confirmpassword"
+                    placeholder="Repeat password"
+                    value={FormData.confirmpassword}
+                    onChange={handleChange}
+                  />
+                  <button
+                    type="button"
+                    className="eye-btn"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    aria-label="Toggle confirm password"
+                  >
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
               </div>
             </div>
 
-            {/* Worker checkbox */}
-            <label className="worker-checkbox">
-              <input
-                type="checkbox"
-                checked={IsServiceprovider}
-                onChange={() => setIsServiceprovider(!IsServiceprovider)}
-              />
-              <span className="custom-checkbox">
-                {IsServiceprovider && <FiCheckCircle className="check-icon" />}
-              </span>
-              <div className="checkbox-text">
-                <p className="checkbox-title">I am a service provider / worker</p>
-                <p className="checkbox-sub">Tick this if you offer services on SmartServe</p>
+            {/* Service Provider Toggle */}
+            <div className={`worker-selection-card ${IsServiceprovider ? 'active-provider-mode' : ''}`}>
+              <label className="worker-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={IsServiceprovider}
+                  onChange={() => setIsServiceprovider(!IsServiceprovider)}
+                />
+                <div className="custom-check-box">
+                  {IsServiceprovider && <CheckCircle2 size={16} color="#ffffff" />}
+                </div>
+                <div className="checkbox-text-block">
+                  <span className="checkbox-title">I am a Service Provider / Worker</span>
+                  <span className="checkbox-sub">Check this to offer your skills and get customer bookings</span>
+                </div>
+              </label>
+            </div>
+
+            {!IsServiceprovider && (
+              <div className="submit-section">
+                <button type="button" className="continue-btn" onClick={handleContinue}>
+                  <span>Continue to Verification</span>
+                  <ArrowRight size={18} />
+                </button>
+                <p className="footer-safe">
+                  <ShieldCheck size={14} /> Your personal information is safe and never shared.
+                </p>
               </div>
-            </label>
-
-            <button type="button" className="continue-btn" onClick={handleContinue}>
-              Continue <FiArrowRight />
-            </button>
-
-            <p className="footer-safe">
-              <FiLock size={12} /> Your information is safe with us and will never be shared.
-            </p>
+            )}
           </div>
 
-          {/* RIGHT COLUMN */}
+          {/* WORKER DETAILS ACCORDION / CARD (Smoothly visible when selected) */}
           {IsServiceprovider && (
-            <div className="worker-sidebar">
-              <button
-                type="button"
-                className="worker-header"
+            <div className="register-card worker-sidebar-card">
+              <div
+                className="card-section-heading accordion-trigger"
                 onClick={() => setWorkerDetailsOpen(!workerDetailsOpen)}
               >
-                <FiBriefcase className="worker-header-icon" />
-                <h3>
-                  Worker Details <span>(Will appear when checked)</span>
-                </h3>
-                {workerDetailsOpen ? <FiChevronUp /> : <FiChevronDown />}
-              </button>
+                <div className="section-icon-wrap green-icon-wrap">
+                  <Briefcase size={20} color="#04B204" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="section-heading-text">Provider Profile Details</h2>
+                  <p className="section-subtext">Information shown to local customers</p>
+                </div>
+                <button type="button" className="accordion-arrow">
+                  {workerDetailsOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                </button>
+              </div>
 
               {workerDetailsOpen && (
-                <div className="worker-body">
+                <div className="worker-body-section">
                   <div className="info-banner">
-                    <FiCheckCircle className="info-icon" />
-                    <p>Provide your work details so customers can find you easily.</p>
+                    <CheckCircle2 size={18} className="info-banner-icon" />
+                    <p>Accurate details help us match you with nearby customers in need of your services.</p>
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group full-span">
                     <label>
-                      <FiMapPin className="label-icon" /> Profession / Category
+                      <Briefcase size={15} className="label-icon" /> Profession / Category
                     </label>
                     <div className="input-wrapper">
-                      <span className="input-emoji">🛠️</span>
-                      <select value={FormData.Profession} name='Profession' onChange={handleChange}>
-                        <option>Select profession</option>
-                        <option value="plumbing">Plumbing</option>
-                        <option value="electrical">Electrical</option>
-                        <option value="carpentry">Carpentry</option>
-                        <option value="painting">Painting</option>
-                        <option value="pest">Pest Control</option>
-                        <option value="appliance">Appliance Repair</option>
+                      <select value={FormData.Profession} name="Profession" onChange={handleChange}>
+                        <option value="">Select your service profession</option>
+                        <option value="plumbing">Plumbing Services</option>
+                        <option value="electrical">Electrical Repairs</option>
+                        <option value="carpentry">Carpentry & Woodwork</option>
+                        <option value="painting">House & Commercial Painting</option>
+                        <option value="pest">Pest Control Services</option>
+                        <option value="appliance">Appliance Repair & Servicing</option>
                       </select>
                     </div>
                   </div>
 
-                  <div className="form-group">
-                    <label>
-                      <FiStar className="label-icon" /> Years of Experience
-                    </label>
-                    <div className="input-wrapper">
-                      <FiStar className="input-icon" />
-                      <select value={FormData.Experience} name='Experience' onChange={handleChange}>
-                        <option>Select Experience Time</option>
-                        <option value="0-1">Less than 1 Year</option>
-                        <option value="1-3">1-3 Years</option>
-                        <option value="3-5">3-5 Years</option>
-                        <option value="5+">5+ Years</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <label>
-                      <FiTarget className="label-icon" /> Service Area / Radius
-                    </label>
-                    <div className="input-wrapper">
-                      <FiTarget className="input-icon" />
-                      <select value={FormData.ServiceRadius} name='ServiceRadius' onChange={handleChange}>
-                        <option>Select Service Range</option>
-                        <option value="in 5km">Within 5 km</option>
-                        <option value="in 10km">Within 10 km</option>
-                        <option value="in 15km">Within 15 km</option>
-                        <option value="in 25km">Within 25 km</option>
-                      </select>
-                    </div>
-                    <p className="hint-text">Within how many km you provide service</p>
-                  </div>
-
-                  <div className="form-group full-width">
-                    <div className="personalinfo section-header">
+                  <div className="form-grid">
+                    <div className="form-group">
                       <label>
-                        <FiMapPin className="section-icon" /> Service Address
+                        <Star size={15} className="label-icon" /> Years of Experience
                       </label>
+                      <div className="input-wrapper">
+                        <select value={FormData.Experience} name="Experience" onChange={handleChange}>
+                          <option value="">Select experience</option>
+                          <option value="0-1">Less than 1 Year</option>
+                          <option value="1-3">1 - 3 Years</option>
+                          <option value="3-5">3 - 5 Years</option>
+                          <option value="5+">5+ Years</option>
+                        </select>
+                      </div>
                     </div>
+
+                    <div className="form-group">
+                      <label>
+                        <Target size={15} className="label-icon" /> Service Area / Radius
+                      </label>
+                      <div className="input-wrapper">
+                        <select value={FormData.ServiceRadius} name="ServiceRadius" onChange={handleChange}>
+                          <option value="">Select service range</option>
+                          <option value="in 5km">Within 5 km</option>
+                          <option value="in 10km">Within 10 km</option>
+                          <option value="in 15km">Within 15 km</option>
+                          <option value="in 25km">Within 25 km</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="form-group full-span address-field-group">
+                    <div className="address-header-row">
+                      <label>
+                        <MapPin size={15} className="label-icon" /> Your Operating Base Address
+                      </label>
+                      <button
+                        type="button"
+                        className="location-btn"
+                        onClick={getCurrentLocation}
+                        disabled={detectingLocation}
+                      >
+                        <Compass size={14} />
+                        <span>{detectingLocation ? "Detecting..." : "Auto-detect Location"}</span>
+                      </button>
+                    </div>
+
                     <div className="input-wrapper">
-                      <FiHome className="input-icon "/>
+                      <Home size={18} className="input-icon" />
                       <input
                         type="text"
                         name="address"
-                        placeholder=""
+                        placeholder="Street, Landmark, City or Area"
                         value={FormData.address}
                         onChange={handleChange}
                       />
                     </div>
-                    <button className='location-btn' type='button' onClick={getCurrentLocation}>
-                      Use curent location
-                    </button>
                   </div>
 
+                  <div className="submit-section">
+                    <button type="button" className="continue-btn" onClick={handleContinue}>
+                      <span>Continue to Verification</span>
+                      <ArrowRight size={18} />
+                    </button>
+                    <p className="footer-safe">
+                      <ShieldCheck size={14} /> Next step: Quick ID Document & Selfie Verification
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
@@ -576,4 +602,3 @@ const Register = () => {
 };
 
 export default Register;
-

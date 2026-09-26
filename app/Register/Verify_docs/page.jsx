@@ -1,21 +1,19 @@
 "use client";
 import "./VerificationModule.css";
 import { useState, useRef } from "react";
-import { Geist } from "next/font/google";
 import NotificationBanner from "../../../components/NotificationBanner/NotificationBanner";
 import {
   ShieldCheck,
   UploadCloud,
   Camera,
   RotateCcw,
-  Shield,
-  Check,
+  CheckCircle2,
   ArrowRight,
+  FileCheck,
+  AlertCircle,
+  Lock,
+  Sparkles,
 } from "lucide-react";
-
-const geist = Geist({
-  subsets: ["latin"],
-});
 
 export default function Page() {
   const videoRef = useRef(null);
@@ -31,6 +29,7 @@ export default function Page() {
     message: "",
     type: "error",
   });
+
   const showNotification = (message, type = "error") => {
     setNotification({
       show: true,
@@ -38,6 +37,7 @@ export default function Page() {
       type,
     });
   };
+
   const [submitting, setSubmitting] = useState(false);
 
   const handleVerify = async () => {
@@ -50,7 +50,7 @@ export default function Page() {
       return;
     }
     if (!selfie) {
-      showNotification("Please click a live selfie.");
+      showNotification("Please capture a live selfie to confirm your identity.");
       return;
     }
 
@@ -79,13 +79,13 @@ export default function Page() {
       setTimeout(() => {
         window.location.href = "/Serviceprovider";
       }, 1200);
-
     } catch (err) {
       console.error("Verification upload error:", err);
       showNotification("Something went wrong during submission.");
       setSubmitting(false);
     }
   };
+
   // Start camera
   const startCamera = async () => {
     try {
@@ -100,63 +100,38 @@ export default function Page() {
         videoRef.current.srcObject = stream;
         setCameraActive(true);
       }
-
     } catch (error) {
       console.error("Camera error:", error);
+      showNotification("Could not access camera. Please check permissions.");
     }
   };
 
   // Capture selfie
   const captureSelfie = () => {
-
     const video = videoRef.current;
-
-    if (!video || !cameraActive) {
-      return;
-    }
+    if (!video || !cameraActive) return;
 
     const canvas = document.createElement("canvas");
-
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
     const context = canvas.getContext("2d");
-
-    context.drawImage(
-      video,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     canvas.toBlob((blob) => {
-
-      if (!blob) {
-        return;
-      }
-
-      const selfieFile = new File(
-        [blob],
-        "selfie.jpg",
-        {
-          type: "image/jpeg",
-        }
-      );
+      if (!blob) return;
+      const selfieFile = new File([blob], "selfie.jpg", {
+        type: "image/jpeg",
+      });
 
       setSelfie(selfieFile);
-
       const previewURL = URL.createObjectURL(selfieFile);
       setSelfiePreview(previewURL);
-
     }, "image/jpeg");
 
     const stream = video.srcObject;
-
     if (stream) {
-      stream.getTracks().forEach((track) => {
-        track.stop();
-      });
+      stream.getTracks().forEach((track) => track.stop());
     }
 
     video.srcObject = null;
@@ -165,33 +140,22 @@ export default function Page() {
 
   // Retake selfie
   const retakeSelfie = () => {
-
     setSelfie(null);
-
     if (selfiePreview) {
       URL.revokeObjectURL(selfiePreview);
     }
-
     setSelfiePreview("");
-
     startCamera();
   };
 
   // Handle document selection
   const handleDocumentChange = (e) => {
-
     const file = e.target.files?.[0];
-
-    if (!file) {
-      return;
-    }
+    if (!file) return;
 
     if (file.size > 10 * 1024 * 1024) {
-
-      alert("File size must be less than 10MB");
-
+      showNotification("File size must be less than 10MB");
       e.target.value = "";
-
       return;
     }
 
@@ -199,10 +163,10 @@ export default function Page() {
   };
 
   return (
-
-    <div className={geist.className}>
+    <div className="verification-page-wrapper">
       {Notification.show && (
-        <NotificationBanner message={Notification.message}
+        <NotificationBanner
+          message={Notification.message}
           type={Notification.type}
           onClose={() =>
             setNotification({
@@ -210,284 +174,221 @@ export default function Page() {
               message: "",
               type: "error",
             })
-          } />
+          }
+        />
       )}
-      <div className="verification-page">
 
-        <div className="verification-container">
+      <div className="verification-container">
+        {/* HEADER */}
+        <div className="verification-header">
+          <div className="verification-icon-badge">
+            <ShieldCheck size={36} color="#04B204" />
+          </div>
+          <span className="verification-badge">
+            <Sparkles size={14} /> Service Provider Trust Verification
+          </span>
+          <h1 className="verification-title">Identity & Document Verification</h1>
+          <p className="verification-subtitle">
+            SmartServe requires all service providers to submit government identity verification to unlock customer bookings and maintain our trust standards.
+          </p>
+        </div>
 
-          {/* HEADER */}
-
-          <div className="verification-header">
-
-            <div className="verification-icon">
-              <ShieldCheck size={40} />
+        {/* BODY */}
+        <div className="verification-body-grid">
+          {/* STEP 1: DOCUMENT UPLOAD */}
+          <div className="verification-card">
+            <div className="card-step-header">
+              <span className="step-num-badge">01</span>
+              <div>
+                <h2 className="step-title">Government Document</h2>
+                <p className="step-desc">Upload a valid photo ID issued by the government</p>
+              </div>
             </div>
 
-            <h1>
-              Identity Verification
-            </h1>
-
-            <p>
-              Please submit your government document and a live selfie to verify
-              your identity.
-            </p>
-
-          </div>
-
-          {/* BODY */}
-
-          <div className="verification-body">
-
-            {/* LEFT */}
-
-            <div className="verification-card">
-
-              <h2>
-                1. Upload Government Document
-              </h2>
-
-              <p className="label">
-                Select the type of document
-              </p>
-
+            <div className="doc-select-group">
+              <label>Select Document Type</label>
               <select
                 name="documentType"
-                className="dropdown"
+                className="doc-dropdown"
                 value={documentType}
                 onChange={(e) => setDocumentType(e.target.value)}
               >
-
-                <option value="">
-                  Select document
-                </option>
-
-                <option value="aadhar">
-                  Aadhar Card
-                </option>
-
-                <option value="pan">
-                  PAN Card
-                </option>
-
-                <option value="driving-license">
-                  Driving License
-                </option>
-
-                <option value="passport">
-                  Passport
-                </option>
-
+                <option value="">Select identity document...</option>
+                <option value="aadhar">Aadhaar Card (Front & Back)</option>
+                <option value="pan">PAN Card</option>
+                <option value="driving-license">Driving License</option>
+                <option value="passport">Passport</option>
               </select>
-
-              <div
-                className="upload-box"
-                onClick={() => fileInputRef.current?.click()}
-              >
-
-                <UploadCloud
-                  size={52}
-                  strokeWidth={1.5}
-                />
-
-                <h3>
-                  {documentFile
-                    ? documentFile.name
-                    : "Click to upload your file"}
-                </h3>
-
-                <p>
-                  PNG, JPG, JPEG or PDF
-                  <br />
-                  Maximum file size 10MB
-                </p>
-
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".png,.jpg,.jpeg,.pdf"
-                  hidden
-                  onChange={handleDocumentChange}
-                />
-
-              </div>
-
-              <div className="tips-card">
-
-                <h3>
-                  Ensure the document is:
-                </h3>
-
-                <ul>
-
-                  <li>
-                    <Check size={18} />
-                    Clear and readable
-                  </li>
-
-                  <li>
-                    <Check size={18} />
-                    All corners are visible
-                  </li>
-
-                  <li>
-                    <Check size={18} />
-                    Not blurred or cropped
-                  </li>
-
-                </ul>
-
-              </div>
-
             </div>
 
-            {/* RIGHT */}
-
-            <div className="verification-card">
-
-              <h2>
-                2. Take a Live Selfie
-              </h2>
-
-              <p className="label">
-                Position your face inside the frame
-              </p>
-
-              <div className="camera-container">
-
-                <div className="live-tag">
-
-                  <span className="live-dot"></span>
-
-                  Live
-
+            <div
+              className={`upload-dropzone ${documentFile ? 'file-uploaded' : ''}`}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <UploadCloud size={44} className="upload-icon" />
+              <div className="upload-text-block">
+                <h3 className="upload-main-text">
+                  {documentFile ? documentFile.name : "Click to select or drag & drop document"}
+                </h3>
+                <p className="upload-sub-text">
+                  PNG, JPG, JPEG or PDF (Max size: 10MB)
+                </p>
+              </div>
+              {documentFile && (
+                <div className="uploaded-indicator">
+                  <CheckCircle2 size={16} color="#16A34A" />
+                  <span>File Selected</span>
                 </div>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".png,.jpg,.jpeg,.pdf"
+                hidden
+                onChange={handleDocumentChange}
+              />
+            </div>
 
-                <button
-                  type="button"
-                  className="camera-button"
-                  onClick={startCamera}
-                >
+            <div className="tips-box">
+              <div className="tips-header">
+                <FileCheck size={16} color="#04B204" />
+                <span>Document Guidelines</span>
+              </div>
+              <ul className="tips-list">
+                <li>Clear and all 4 corners visible</li>
+                <li>Full name matches your registration name</li>
+                <li>No blur or glare obscuring details</li>
+              </ul>
+            </div>
+          </div>
 
-                  <Camera size={20} />
+          {/* STEP 2: LIVE SELFIE */}
+          <div className="verification-card">
+            <div className="card-step-header">
+              <span className="step-num-badge">02</span>
+              <div>
+                <h2 className="step-title">Live Selfie Confirmation</h2>
+                <p className="step-desc">Match your live face with the submitted photo ID</p>
+              </div>
+            </div>
 
-                </button>
+            <div className="camera-frame-container">
+              <div className="camera-viewport">
+                {!cameraActive && !selfiePreview && (
+                  <div className="camera-placeholder">
+                    <Camera size={48} className="camera-standby-icon" />
+                    <p className="placeholder-text">Click below to activate your camera</p>
+                    <button
+                      type="button"
+                      className="start-cam-btn"
+                      onClick={startCamera}
+                    >
+                      <Camera size={16} />
+                      <span>Start Camera</span>
+                    </button>
+                  </div>
+                )}
 
-                <div className="camera-preview">
-
-                  {!selfiePreview && (
+                {cameraActive && (
+                  <>
                     <video
                       ref={videoRef}
                       autoPlay
                       playsInline
                       muted
-                      className="camera-video"
+                      className="camera-live-video"
                     />
-                  )}
+                    <div className="live-camera-tag">
+                      <span className="live-dot-pulse" />
+                      <span>Live Video</span>
+                    </div>
+                    <div className="face-guide-frame">
+                      <span className="corner-tl" />
+                      <span className="corner-tr" />
+                      <span className="corner-bl" />
+                      <span className="corner-br" />
+                    </div>
+                  </>
+                )}
 
-                  {selfiePreview && (
+                {selfiePreview && (
+                  <div className="selfie-preview-wrap">
                     <img
                       src={selfiePreview}
                       alt="Captured selfie"
-                      className="selfie-preview"
+                      className="selfie-captured-img"
                     />
-                  )}
-
-                  <div className="face-guide">
-
-                    <span className="tl"></span>
-                    <span className="tr"></span>
-                    <span className="bl"></span>
-                    <span className="br"></span>
-
+                    <div className="captured-badge">
+                      <CheckCircle2 size={16} color="#ffffff" />
+                      <span>Photo Captured</span>
+                    </div>
                   </div>
-
-                </div>
-
-                <div className="camera-tip">
-
-                  <div className="tip-icon">
-                    💡
-                  </div>
-
-                  <div>
-
-                    <strong>
-                      Ensure good lighting and clear visibility
-                    </strong>
-
-                    <p>
-                      Remove glasses, hat or masks.
-                    </p>
-
-                  </div>
-
-                </div>
-
+                )}
               </div>
 
-              <div className="capture-controls">
+              {cameraActive && (
+                <div className="camera-active-controls">
+                  <button
+                    type="button"
+                    className="capture-shutter-btn"
+                    onClick={captureSelfie}
+                    title="Take Photo"
+                  >
+                    <div className="shutter-inner" />
+                  </button>
+                  <span className="shutter-label">Click to Capture</span>
+                </div>
+              )}
 
-                <button
-                  type="button"
-                  className="capture-btn"
-                  onClick={captureSelfie}
-                  disabled={!cameraActive}
-                >
-                </button>
+              {selfiePreview && (
+                <div className="camera-retake-controls">
+                  <button
+                    type="button"
+                    className="retake-action-btn"
+                    onClick={retakeSelfie}
+                  >
+                    <RotateCcw size={16} />
+                    <span>Retake Photo</span>
+                  </button>
+                </div>
+              )}
+            </div>
 
-                <button
-                  type="button"
-                  className="retake-btn"
-                  onClick={retakeSelfie}
-                  disabled={!selfie}
-                >
-
-                  <RotateCcw size={18} />
-
-                  Retake
-
-                </button>
-
+            <div className="tips-box selfie-tips">
+              <div className="tips-header">
+                <AlertCircle size={16} color="#04B204" />
+                <span>Selfie Tips</span>
               </div>
-
+              <ul className="tips-list">
+                <li>Good lighting facing your camera</li>
+                <li>Remove sunglasses, caps, or face coverings</li>
+                <li>Keep neutral expression inside the frame</li>
+              </ul>
             </div>
-
           </div>
-
-          {/* FOOTER */}
-
-          <div className="verification-footer">
-
-            <div className="security-message">
-
-              <Shield size={22} />
-
-              <span>
-                Your information is secure and encrypted.
-              </span>
-
-            </div>
-
-            <button
-              type="button"
-              className="submit-btn"
-              onClick={handleVerify}
-              disabled={submitting}
-            >
-
-              {submitting ? "Submitting..." : "Submit Verification"}
-
-              <ArrowRight size={22} />
-
-            </button>
-
-          </div>
-
         </div>
 
-      </div>
+        {/* FOOTER ACTION BAR */}
+        <div className="verification-action-bar">
+          <div className="security-guarantee">
+            <Lock size={20} color="#04B204" />
+            <div>
+              <p className="sec-title">256-Bit Encrypted & Privacy Protected</p>
+              <p className="sec-sub">Documents are used strictly for provider identity checks and never shared publicly.</p>
+            </div>
+          </div>
 
+          <button
+            type="button"
+            className="submit-verification-btn"
+            onClick={handleVerify}
+            disabled={submitting}
+          >
+            <span>{submitting ? "Submitting Documents..." : "Submit Verification"}</span>
+            <ArrowRight size={20} />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
