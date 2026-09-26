@@ -69,14 +69,39 @@ const ProviderSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        isActive: {
+            type: Boolean,
+            default: true,
+        },
+        isSuspended: {
+            type: Boolean,
+            default: false,
+        },
+        status: {
+            type: String,
+            enum: ["active", "suspended", "inactive"],
+            default: "active",
+        },
+        suspensionReason: {
+            type: String,
+            default: "",
+        },
+        suspendedAt: {
+            type: Date,
+            default: null,
+        },
     },
     {
         timestamps: true,
     }
 );
 
+ProviderSchema.index({ phone: 1 });
+ProviderSchema.index({ Proffesion: 1, verificationStatus: 1, isOnline: 1, isSuspended: 1 });
+ProviderSchema.index({ verificationStatus: 1 });
+
 const Provider =
     mongoose.models.Provider ||
     mongoose.model("Provider", ProviderSchema);
 
-export default Provider;
+export default Provider;

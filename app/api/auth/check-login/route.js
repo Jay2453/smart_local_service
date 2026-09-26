@@ -32,7 +32,7 @@ export async function POST(request) {
 
         await connectDB();
 
-        const user = await User.findOne({ phone });
+        const user = await User.findOne({ phone, role: "customer" });
         const provider = await Provider.findOne({ phone });
 
         if (!user && !provider) {
@@ -53,6 +53,17 @@ export async function POST(request) {
         } else {
             account = user;
             role = "customer";
+        }
+
+        // Check if account is active / not suspended
+        if (account.isActive === false || account.status === "deactivated" || account.status === "suspended" || account.isSuspended === true) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Your account has been deactivated or suspended. Please contact support.",
+                },
+                { status: 403 }
+            );
         }
 
         const passwordMatch = await bcrypt.compare(
