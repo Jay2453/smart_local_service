@@ -243,11 +243,11 @@ export default function AdminServicesPage() {
                             <div>
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
                                     <div>
-                                        <h3 style={{ margin: "0 0 4px 0", fontSize: "1.15rem", color: "#ffffff" }}>
+                                        <h3 style={{ margin: "0 0 4px 0", fontSize: "1.15rem", color: "var(--admin-text-main)" }}>
                                             {svc.name}
                                         </h3>
                                         <div style={{ display: "flex", gap: "6px" }}>
-                                            <span style={{ fontSize: "0.75rem", background: "rgba(255,255,255,0.06)", padding: "2px 8px", borderRadius: "4px", color: "#38bdf8" }}>
+                                            <span style={{ fontSize: "0.75rem", background: "var(--admin-info-bg)", border: "1px solid var(--admin-info-border)", padding: "2px 8px", borderRadius: "4px", color: "var(--admin-info)", fontWeight: "600" }}>
                                                 {svc.category}
                                             </span>
                                             <span style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "var(--admin-text-sub)" }}>
@@ -260,25 +260,25 @@ export default function AdminServicesPage() {
                                     </span>
                                 </div>
 
-                                <p style={{ fontSize: "0.825rem", color: "#cbd5e1", margin: "0 0 14px 0", lineHeight: "1.4" }}>
+                                <p style={{ fontSize: "0.825rem", color: "var(--admin-text-body)", margin: "0 0 14px 0", lineHeight: "1.4" }}>
                                     {svc.description}
                                 </p>
 
-                                <div style={{ background: "rgba(0,0,0,0.3)", padding: "12px", borderRadius: "var(--admin-radius-md)", marginBottom: "14px" }}>
+                                <div style={{ background: "var(--admin-card-inner)", border: "1px solid var(--admin-border)", padding: "12px", borderRadius: "var(--admin-radius-md)", marginBottom: "14px" }}>
                                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", marginBottom: "6px" }}>
                                         <span style={{ color: "var(--admin-text-sub)" }}>Base Price</span>
-                                        <span style={{ fontWeight: "700", color: "#86efac" }}>₹{svc.basePrice}</span>
+                                        <span style={{ fontWeight: "700", color: "var(--admin-primary-darker)" }}>₹{svc.basePrice}</span>
                                     </div>
                                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem" }}>
                                         <span style={{ color: "var(--admin-text-sub)" }}>Configured Problem Types</span>
-                                        <span style={{ fontWeight: "600", color: "#ffffff" }}>{svc.tasks?.length || 0} Task(s)</span>
+                                        <span style={{ fontWeight: "600", color: "var(--admin-text-main)" }}>{svc.tasks?.length || 0} Task(s)</span>
                                     </div>
                                 </div>
 
                                 {svc.tasks?.length > 0 && (
                                     <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "16px" }}>
                                         {svc.tasks.slice(0, 3).map((t, idx) => (
-                                            <span key={idx} style={{ fontSize: "0.7rem", background: "rgba(255,255,255,0.04)", border: "1px solid var(--admin-border)", padding: "3px 8px", borderRadius: "4px", color: "var(--admin-text-muted)" }}>
+                                            <span key={idx} style={{ fontSize: "0.7rem", background: "#FFFFFF", border: "1px solid var(--admin-border)", padding: "3px 8px", borderRadius: "4px", color: "var(--admin-text-body)", fontWeight: "500" }}>
                                                 {t.name} (₹{t.price})
                                             </span>
                                         ))}
@@ -410,7 +410,7 @@ export default function AdminServicesPage() {
                                 {/* Dynamic Tasks & Problem Pricing */}
                                 <div style={{ borderTop: "1px solid var(--admin-border)", paddingTop: "14px" }}>
                                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                                        <label style={{ fontSize: "0.85rem", color: "#ffffff", fontWeight: "600" }}>
+                                        <label style={{ fontSize: "0.85rem", color: "var(--admin-text-main)", fontWeight: "600" }}>
                                             Service Tasks & Problem Choices ({formData.tasks.length})
                                         </label>
                                         <button

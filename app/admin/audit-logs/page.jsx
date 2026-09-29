@@ -155,7 +155,7 @@ export default function AdminAuditLogsPage() {
                                                 {new Date(log.createdAt).toLocaleString()}
                                             </td>
                                             <td>
-                                                <div style={{ fontWeight: "600", color: "#ffffff" }}>
+                                                <div style={{ fontWeight: "600", color: "var(--admin-text-main)" }}>
                                                     {log.adminName}
                                                 </div>
                                                 <div style={{ fontSize: "0.725rem", color: "var(--admin-text-sub)" }}>
@@ -167,11 +167,12 @@ export default function AdminAuditLogsPage() {
                                                     className="status-pill"
                                                     style={{
                                                         background: log.action.includes("failed") || log.action.includes("deleted") || log.action.includes("suspended")
-                                                            ? "rgba(239, 68, 68, 0.15)"
-                                                            : "rgba(4, 178, 4, 0.15)",
+                                                            ? "var(--admin-danger-bg)"
+                                                            : "var(--admin-primary-light)",
                                                         color: log.action.includes("failed") || log.action.includes("deleted") || log.action.includes("suspended")
-                                                            ? "#fca5a5"
-                                                            : "#86efac",
+                                                            ? "var(--admin-danger)"
+                                                            : "var(--admin-primary-darker)",
+                                                        border: `1px solid ${log.action.includes("failed") || log.action.includes("deleted") || log.action.includes("suspended") ? "var(--admin-danger-border)" : "var(--admin-border-subtle)"}`,
                                                         fontFamily: "monospace",
                                                         fontSize: "0.725rem",
                                                     }}
@@ -244,34 +245,34 @@ export default function AdminAuditLogsPage() {
 
                         <div className="modal-body">
                             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                                <div style={{ background: "rgba(255,255,255,0.03)", padding: "14px", borderRadius: "8px", border: "1px solid var(--admin-border)" }}>
+                                <div style={{ background: "var(--admin-card-inner)", padding: "14px", borderRadius: "8px", border: "1px solid var(--admin-border)" }}>
                                     <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Description</div>
-                                    <div style={{ fontWeight: "600", color: "#ffffff", marginTop: "2px" }}>{selectedLog.description}</div>
+                                    <div style={{ fontWeight: "700", color: "var(--admin-text-main)", marginTop: "2px" }}>{selectedLog.description}</div>
                                 </div>
 
                                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                                    <div style={{ background: "rgba(255,255,255,0.02)", padding: "10px 12px", borderRadius: "6px" }}>
+                                    <div style={{ background: "var(--admin-card-inner)", border: "1px solid var(--admin-border)", padding: "10px 12px", borderRadius: "6px" }}>
                                         <div style={{ fontSize: "0.7rem", color: "var(--admin-text-sub)" }}>Administrator</div>
-                                        <div style={{ fontSize: "0.85rem", color: "#ffffff" }}>{selectedLog.adminName} ({selectedLog.adminEmail})</div>
+                                        <div style={{ fontSize: "0.85rem", color: "var(--admin-text-main)", fontWeight: "600" }}>{selectedLog.adminName} ({selectedLog.adminEmail})</div>
                                     </div>
-                                    <div style={{ background: "rgba(255,255,255,0.02)", padding: "10px 12px", borderRadius: "6px" }}>
+                                    <div style={{ background: "var(--admin-card-inner)", border: "1px solid var(--admin-border)", padding: "10px 12px", borderRadius: "6px" }}>
                                         <div style={{ fontSize: "0.7rem", color: "var(--admin-text-sub)" }}>Timestamp</div>
-                                        <div style={{ fontSize: "0.85rem", color: "#ffffff" }}>{new Date(selectedLog.createdAt).toLocaleString()}</div>
+                                        <div style={{ fontSize: "0.85rem", color: "var(--admin-text-main)" }}>{new Date(selectedLog.createdAt).toLocaleString()}</div>
                                     </div>
-                                    <div style={{ background: "rgba(255,255,255,0.02)", padding: "10px 12px", borderRadius: "6px" }}>
+                                    <div style={{ background: "var(--admin-card-inner)", border: "1px solid var(--admin-border)", padding: "10px 12px", borderRadius: "6px" }}>
                                         <div style={{ fontSize: "0.7rem", color: "var(--admin-text-sub)" }}>Target Resource ID</div>
-                                        <div style={{ fontSize: "0.85rem", fontFamily: "monospace", color: "#86efac" }}>{selectedLog.targetId || "N/A"}</div>
+                                        <div style={{ fontSize: "0.85rem", fontFamily: "monospace", color: "var(--admin-primary-darker)", fontWeight: "600" }}>{selectedLog.targetId || "N/A"}</div>
                                     </div>
-                                    <div style={{ background: "rgba(255,255,255,0.02)", padding: "10px 12px", borderRadius: "6px" }}>
+                                    <div style={{ background: "var(--admin-card-inner)", border: "1px solid var(--admin-border)", padding: "10px 12px", borderRadius: "6px" }}>
                                         <div style={{ fontSize: "0.7rem", color: "var(--admin-text-sub)" }}>IP Address</div>
-                                        <div style={{ fontSize: "0.85rem", fontFamily: "monospace", color: "#ffffff" }}>{selectedLog.ipAddress || "Localhost"}</div>
+                                        <div style={{ fontSize: "0.85rem", fontFamily: "monospace", color: "var(--admin-text-main)" }}>{selectedLog.ipAddress || "Localhost"}</div>
                                     </div>
                                 </div>
 
                                 {selectedLog.metadata && Object.keys(selectedLog.metadata).length > 0 && (
                                     <div>
                                         <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)", marginBottom: "4px" }}>Structured Metadata</div>
-                                        <pre style={{ background: "rgba(0,0,0,0.5)", border: "1px solid var(--admin-border)", borderRadius: "8px", padding: "12px", fontSize: "0.75rem", color: "#86efac", overflowX: "auto" }}>
+                                        <pre style={{ background: "var(--admin-card-inner)", border: "1px solid var(--admin-border)", borderRadius: "8px", padding: "12px", fontSize: "0.75rem", color: "var(--admin-primary-darker)", overflowX: "auto" }}>
                                             {JSON.stringify(selectedLog.metadata, null, 2)}
                                         </pre>
                                     </div>

@@ -106,9 +106,9 @@ export default function AdminSettingsPage() {
             {successMessage && (
                 <div
                     style={{
-                        background: "rgba(16, 185, 129, 0.15)",
-                        border: "1px solid rgba(16, 185, 129, 0.3)",
-                        color: "#86efac",
+                        background: "var(--admin-success-bg)",
+                        border: "1px solid var(--admin-success-border)",
+                        color: "var(--admin-success)",
                         padding: "12px 18px",
                         borderRadius: "var(--admin-radius-md)",
                         marginBottom: "20px",
@@ -116,6 +116,7 @@ export default function AdminSettingsPage() {
                         alignItems: "center",
                         gap: "10px",
                         fontSize: "0.875rem",
+                        fontWeight: "600",
                     }}
                 >
                     <CheckCircle2 size={18} />
@@ -268,7 +269,7 @@ export default function AdminSettingsPage() {
                     </div>
 
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                        <label style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer", background: "rgba(255,255,255,0.02)", padding: "14px", borderRadius: "8px", border: "1px solid var(--admin-border)" }}>
+                        <label style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer", background: "var(--admin-card-inner)", padding: "14px", borderRadius: "8px", border: "1px solid var(--admin-border)" }}>
                             <input
                                 type="checkbox"
                                 checked={!!settingsMap.require_provider_verification}
@@ -276,7 +277,7 @@ export default function AdminSettingsPage() {
                                 style={{ width: "18px", height: "18px", accentColor: "#04b204" }}
                             />
                             <div>
-                                <div style={{ fontWeight: "600", color: "#ffffff", fontSize: "0.9rem" }}>
+                                <div style={{ fontWeight: "600", color: "var(--admin-text-main)", fontSize: "0.9rem" }}>
                                     Require Document Verification for Matching Engine
                                 </div>
                                 <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>
@@ -285,7 +286,7 @@ export default function AdminSettingsPage() {
                             </div>
                         </label>
 
-                        <label style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer", background: "rgba(255,255,255,0.02)", padding: "14px", borderRadius: "8px", border: "1px solid var(--admin-border)" }}>
+                        <label style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer", background: "var(--admin-card-inner)", padding: "14px", borderRadius: "8px", border: "1px solid var(--admin-border)" }}>
                             <input
                                 type="checkbox"
                                 checked={!!settingsMap.broadcast_notifications_enabled}
@@ -293,7 +294,7 @@ export default function AdminSettingsPage() {
                                 style={{ width: "18px", height: "18px", accentColor: "#04b204" }}
                             />
                             <div>
-                                <div style={{ fontWeight: "600", color: "#ffffff", fontSize: "0.9rem" }}>
+                                <div style={{ fontWeight: "600", color: "var(--admin-text-main)", fontSize: "0.9rem" }}>
                                     Allow Platform Broadcasts
                                 </div>
                                 <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>
@@ -302,7 +303,7 @@ export default function AdminSettingsPage() {
                             </div>
                         </label>
 
-                        <label style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer", background: "rgba(239,68,68,0.05)", padding: "14px", borderRadius: "8px", border: "1px solid rgba(239,68,68,0.2)" }}>
+                        <label style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer", background: "var(--admin-danger-bg)", padding: "14px", borderRadius: "8px", border: "1px solid var(--admin-danger-border)" }}>
                             <input
                                 type="checkbox"
                                 checked={!!settingsMap.maintenance_mode}
@@ -310,10 +311,10 @@ export default function AdminSettingsPage() {
                                 style={{ width: "18px", height: "18px", accentColor: "#ef4444" }}
                             />
                             <div>
-                                <div style={{ fontWeight: "600", color: "#fca5a5", fontSize: "0.9rem" }}>
+                                <div style={{ fontWeight: "600", color: "var(--admin-danger)", fontSize: "0.9rem" }}>
                                     System Maintenance Mode
                                 </div>
-                                <div style={{ fontSize: "0.75rem", color: "#cbd5e1" }}>
+                                <div style={{ fontSize: "0.75rem", color: "var(--admin-text-body)" }}>
                                     Temporarily pause new customer booking requests for scheduled maintenance.
                                 </div>
                             </div>

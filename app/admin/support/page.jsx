@@ -244,10 +244,10 @@ export default function AdminSupportPage() {
                                 <tbody>
                                     {tickets.map((t) => (
                                         <tr key={t._id}>
-                                            <td style={{ fontFamily: "monospace", color: "#86efac", fontWeight: "600" }}>
+                                            <td style={{ fontFamily: "monospace", color: "var(--admin-primary-darker)", fontWeight: "600" }}>
                                                 {t.ticketNumber}
                                             </td>
-                                            <td style={{ fontWeight: "600", color: "#ffffff", maxWidth: "240px" }}>
+                                            <td style={{ fontWeight: "600", color: "var(--admin-text-main)", maxWidth: "240px" }}>
                                                 <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                                     {t.subject}
                                                 </div>
@@ -266,8 +266,9 @@ export default function AdminSupportPage() {
                                                 <span
                                                     className="status-pill"
                                                     style={{
-                                                        background: t.priority === "urgent" ? "rgba(239, 68, 68, 0.15)" : "rgba(255,255,255,0.05)",
-                                                        color: t.priority === "urgent" ? "#fca5a5" : "#cbd5e1",
+                                                        background: t.priority === "urgent" ? "var(--admin-danger-bg)" : "var(--admin-border-light)",
+                                                        color: t.priority === "urgent" ? "var(--admin-danger)" : "var(--admin-text-body)",
+                                                        border: `1px solid ${t.priority === "urgent" ? "var(--admin-danger-border)" : "var(--admin-border)"}`,
                                                     }}
                                                 >
                                                     {t.priority}
@@ -342,9 +343,9 @@ export default function AdminSupportPage() {
                             ) : (
                                 <div>
                                     {/* Ticket Meta & Quick Actions */}
-                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.03)", padding: "12px 16px", borderRadius: "var(--admin-radius-md)", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--admin-card-inner)", border: "1px solid var(--admin-border)", padding: "12px 16px", borderRadius: "var(--admin-radius-md)", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
                                         <div>
-                                            <div style={{ fontSize: "0.85rem", color: "#ffffff", fontWeight: "600" }}>
+                                            <div style={{ fontSize: "0.85rem", color: "var(--admin-text-main)", fontWeight: "700" }}>
                                                 {ticketDetail.userName} ({ticketDetail.userEmail}) • {ticketDetail.userRole}
                                             </div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>
@@ -375,7 +376,7 @@ export default function AdminSupportPage() {
                                     </div>
 
                                     {/* Conversation Stream */}
-                                    <h4 style={{ margin: "0 0 10px 0", color: "#ffffff", fontSize: "0.9rem" }}>
+                                    <h4 style={{ margin: "0 0 10px 0", color: "var(--admin-text-main)", fontSize: "0.9rem" }}>
                                         Message Stream ({ticketDetail.messages?.length || 0})
                                     </h4>
 
@@ -388,19 +389,19 @@ export default function AdminSupportPage() {
                                                     style={{
                                                         padding: "10px 14px",
                                                         borderRadius: "8px",
-                                                        background: isAdmin ? "rgba(4, 178, 4, 0.1)" : "rgba(30, 41, 59, 0.6)",
-                                                        border: `1px solid ${isAdmin ? "rgba(4, 178, 4, 0.3)" : "var(--admin-border)"}`,
+                                                        background: isAdmin ? "var(--admin-primary-light)" : "var(--admin-card-inner)",
+                                                        border: `1px solid ${isAdmin ? "var(--admin-border-subtle)" : "var(--admin-border)"}`,
                                                         alignSelf: isAdmin ? "flex-end" : "flex-start",
                                                         maxWidth: "85%",
                                                     }}
                                                 >
                                                     <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontSize: "0.75rem", color: "var(--admin-text-sub)", marginBottom: "4px" }}>
-                                                        <span style={{ fontWeight: "700", color: isAdmin ? "#86efac" : "#38bdf8" }}>
+                                                        <span style={{ fontWeight: "700", color: isAdmin ? "var(--admin-primary-darker)" : "var(--admin-info)" }}>
                                                             {msg.senderName} ({msg.senderRole})
                                                         </span>
                                                         <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
                                                     </div>
-                                                    <div style={{ fontSize: "0.85rem", color: "#ffffff", lineHeight: "1.4" }}>
+                                                    <div style={{ fontSize: "0.85rem", color: "var(--admin-text-main)", lineHeight: "1.4" }}>
                                                         {msg.message}
                                                     </div>
                                                 </div>
@@ -410,13 +411,13 @@ export default function AdminSupportPage() {
 
                                     {/* Internal Notes Section (Isolated) */}
                                     {ticketDetail.internalNotes?.length > 0 && (
-                                        <div style={{ background: "rgba(245, 158, 11, 0.08)", border: "1px dashed rgba(245, 158, 11, 0.3)", borderRadius: "8px", padding: "12px", marginBottom: "16px" }}>
-                                            <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.8rem", color: "#fef08a", fontWeight: "700", marginBottom: "8px" }}>
+                                        <div style={{ background: "var(--admin-warning-bg)", border: "1px dashed var(--admin-warning-border)", borderRadius: "8px", padding: "12px", marginBottom: "16px" }}>
+                                            <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.8rem", color: "var(--admin-warning)", fontWeight: "700", marginBottom: "8px" }}>
                                                 <Lock size={14} /> Confidential Internal Staff Notes (Hidden from User)
                                             </div>
                                             <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                                                 {ticketDetail.internalNotes.map((note, idx) => (
-                                                    <div key={idx} style={{ fontSize: "0.8rem", color: "#cbd5e1" }}>
+                                                    <div key={idx} style={{ fontSize: "0.8rem", color: "var(--admin-text-body)" }}>
                                                         <strong>{note.adminName}:</strong> {note.note}
                                                     </div>
                                                 ))}

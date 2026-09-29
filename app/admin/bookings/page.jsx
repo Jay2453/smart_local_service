@@ -241,7 +241,7 @@ export default function AdminBookingsPage() {
                                                 #{b._id.toString().slice(-6)}
                                             </td>
                                             <td>
-                                                <div style={{ fontWeight: "600", color: "#ffffff" }}>
+                                                <div style={{ fontWeight: "600", color: "var(--admin-text-main)" }}>
                                                     {b.customerId?.name || "Customer"}
                                                 </div>
                                                 <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>
@@ -251,7 +251,7 @@ export default function AdminBookingsPage() {
                                             <td>
                                                 {b.assignedProviderId ? (
                                                     <div>
-                                                        <div style={{ fontWeight: "600", color: "#86efac" }}>
+                                                        <div style={{ fontWeight: "600", color: "var(--admin-primary-darker)" }}>
                                                             {b.assignedProviderId.name}
                                                         </div>
                                                         <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>
@@ -259,7 +259,7 @@ export default function AdminBookingsPage() {
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <span style={{ color: "#f59e0b", fontSize: "0.8rem", fontWeight: "600" }}>
+                                                    <span style={{ color: "#d97706", fontSize: "0.8rem", fontWeight: "600" }}>
                                                         Awaiting Provider
                                                     </span>
                                                 )}
@@ -276,7 +276,7 @@ export default function AdminBookingsPage() {
                                                 <div style={{ fontSize: "0.85rem" }}>{b.preferredDate}</div>
                                                 <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>{b.preferredTime}</div>
                                             </td>
-                                            <td style={{ fontWeight: "700", color: "#ffffff" }}>
+                                            <td style={{ fontWeight: "700", color: "var(--admin-text-main)" }}>
                                                 ₹{b.estimatedTotal}
                                             </td>
                                             <td>
@@ -354,30 +354,30 @@ export default function AdminBookingsPage() {
                                 </div>
                             ) : (
                                 <div>
-                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", background: "rgba(255,255,255,0.03)", padding: "16px", borderRadius: "var(--admin-radius-md)", marginBottom: "18px" }}>
+                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", background: "var(--admin-card-inner)", padding: "16px", borderRadius: "var(--admin-radius-md)", marginBottom: "18px", border: "1px solid var(--admin-border)" }}>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Customer</div>
-                                            <div style={{ fontWeight: "700", color: "#ffffff" }}>{selectedBooking.customerId?.name}</div>
-                                            <div style={{ fontSize: "0.8rem", color: "#cbd5e1" }}>{selectedBooking.customerId?.phone} • {selectedBooking.customerId?.email}</div>
+                                            <div style={{ fontWeight: "700", color: "var(--admin-text-main)" }}>{selectedBooking.customerId?.name}</div>
+                                            <div style={{ fontSize: "0.8rem", color: "var(--admin-text-body)" }}>{selectedBooking.customerId?.phone} • {selectedBooking.customerId?.email}</div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Assigned Service Provider</div>
-                                            <div style={{ fontWeight: "700", color: selectedBooking.assignedProviderId ? "#86efac" : "#f59e0b" }}>
+                                            <div style={{ fontWeight: "700", color: selectedBooking.assignedProviderId ? "var(--admin-primary-darker)" : "#d97706" }}>
                                                 {selectedBooking.assignedProviderId?.name || "Unassigned / Pending"}
                                             </div>
                                             {selectedBooking.assignedProviderId && (
-                                                <div style={{ fontSize: "0.8rem", color: "#cbd5e1" }}>
+                                                <div style={{ fontSize: "0.8rem", color: "var(--admin-text-body)" }}>
                                                     {selectedBooking.assignedProviderId.phone} • {selectedBooking.assignedProviderId.Proffesion}
                                                 </div>
                                             )}
                                         </div>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Service Address</div>
-                                            <div style={{ color: "#cbd5e1", fontSize: "0.85rem" }}>{selectedBooking.address}</div>
+                                            <div style={{ color: "var(--admin-text-body)", fontSize: "0.85rem" }}>{selectedBooking.address}</div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Schedule & Total</div>
-                                            <div style={{ color: "#cbd5e1", fontSize: "0.85rem", fontWeight: "600" }}>
+                                            <div style={{ color: "var(--admin-text-body)", fontSize: "0.85rem", fontWeight: "600" }}>
                                                 {selectedBooking.preferredDate} at {selectedBooking.preferredTime} • ₹{selectedBooking.estimatedTotal}
                                             </div>
                                         </div>
@@ -385,8 +385,8 @@ export default function AdminBookingsPage() {
 
                                     {/* Description and services */}
                                     <div style={{ marginBottom: "16px" }}>
-                                        <h4 style={{ margin: "0 0 6px 0", color: "#ffffff", fontSize: "0.9rem" }}>Problem Description</h4>
-                                        <p style={{ margin: 0, fontSize: "0.85rem", color: "#cbd5e1", background: "rgba(0,0,0,0.3)", padding: "10px 12px", borderRadius: "8px" }}>
+                                        <h4 style={{ margin: "0 0 6px 0", color: "var(--admin-text-main)", fontSize: "0.9rem" }}>Problem Description</h4>
+                                        <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--admin-text-body)", background: "var(--admin-card-inner)", border: "1px solid var(--admin-border)", padding: "10px 12px", borderRadius: "8px" }}>
                                             {selectedBooking.description || "No description provided."}
                                         </p>
                                     </div>
@@ -394,7 +394,7 @@ export default function AdminBookingsPage() {
                                     {/* Dispatched Requests */}
                                     {bookingDetails?.requests?.length > 0 && (
                                         <div>
-                                            <h4 style={{ margin: "0 0 8px 0", color: "#ffffff", fontSize: "0.9rem" }}>
+                                            <h4 style={{ margin: "0 0 8px 0", color: "var(--admin-text-main)", fontSize: "0.9rem" }}>
                                                 Dispatched Provider Requests ({bookingDetails.requests.length})
                                             </h4>
                                             <div style={{ display: "flex", flexDirection: "column", gap: "6px", maxHeight: "140px", overflowY: "auto" }}>
@@ -406,7 +406,7 @@ export default function AdminBookingsPage() {
                                                             justifyContent: "space-between",
                                                             alignItems: "center",
                                                             padding: "8px 12px",
-                                                            background: "rgba(255,255,255,0.02)",
+                                                            background: "var(--admin-card-inner)",
                                                             border: "1px solid var(--admin-border)",
                                                             borderRadius: "6px",
                                                             fontSize: "0.8rem",

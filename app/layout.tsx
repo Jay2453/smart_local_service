@@ -4,7 +4,7 @@ import Footer from '@/components/Footer/Footer.jsx';
 import { Manrope } from "next/font/google";
 import Navbar from "@/components/Navbar/Navbar";
 //We could have used usestate here for login overlay problem, but for that u have to make it a client component but layout is private and hence cant be made client components.
-
+import ConditionalLayout from "@/components/ConditionalLayout";
 const manrope = Manrope({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
@@ -20,9 +20,10 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
   return (
     <html lang="en">
       <body className={manrope.className}>
-        <Navbar/>
+        
+    <ConditionalLayout>
         {children}
-        <Footer />
+    </ConditionalLayout>
       </body>
     </html>
   );

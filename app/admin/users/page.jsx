@@ -243,7 +243,7 @@ export default function AdminUsersPage() {
                                         const isActive = customer.isActive !== false && customer.status !== "deactivated";
                                         return (
                                             <tr key={customer._id}>
-                                                <td style={{ fontWeight: "600", color: "#ffffff" }}>
+                                                <td style={{ fontWeight: "600", color: "var(--admin-text-main)" }}>
                                                     {customer.name}
                                                 </td>
                                                 <td>{customer.email}</td>
@@ -344,29 +344,29 @@ export default function AdminUsersPage() {
                             ) : (
                                 <div>
                                     {/* Profile Summary */}
-                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", background: "rgba(255,255,255,0.03)", padding: "16px", borderRadius: "var(--admin-radius-md)", marginBottom: "20px" }}>
+                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", background: "var(--admin-card-inner)", padding: "16px", borderRadius: "var(--admin-radius-md)", marginBottom: "20px", border: "1px solid var(--admin-border)" }}>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Full Name</div>
-                                            <div style={{ fontWeight: "700", color: "#ffffff", fontSize: "1.05rem" }}>{selectedCustomer.name}</div>
+                                            <div style={{ fontWeight: "700", color: "var(--admin-text-main)", fontSize: "1.05rem" }}>{selectedCustomer.name}</div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Account Status</div>
                                             <span className={`status-pill ${selectedCustomer.isActive !== false ? "active" : "deactivated"}`}>
-                                                {selectedCustomer.isActive !== false ? "Active Account" : "Deactivated"}
+                                                 {selectedCustomer.isActive !== false ? "Active Account" : "Deactivated"}
                                             </span>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Email Address</div>
-                                            <div style={{ color: "#cbd5e1", fontSize: "0.875rem" }}>{selectedCustomer.email}</div>
+                                            <div style={{ color: "var(--admin-text-body)", fontSize: "0.875rem" }}>{selectedCustomer.email}</div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Phone Number</div>
-                                            <div style={{ color: "#cbd5e1", fontSize: "0.875rem", fontFamily: "monospace" }}>{selectedCustomer.phone}</div>
+                                            <div style={{ color: "var(--admin-text-body)", fontSize: "0.875rem", fontFamily: "monospace" }}>{selectedCustomer.phone}</div>
                                         </div>
                                     </div>
 
                                     {/* Booking History */}
-                                    <h4 style={{ margin: "0 0 12px 0", color: "#ffffff", fontSize: "0.95rem" }}>
+                                    <h4 style={{ margin: "0 0 12px 0", color: "var(--admin-text-main)", fontSize: "0.95rem" }}>
                                         Booking History ({customerDetails?.bookings?.length || 0})
                                     </h4>
 
@@ -377,7 +377,7 @@ export default function AdminUsersPage() {
                                                     key={b._id}
                                                     style={{
                                                         padding: "10px 14px",
-                                                        background: "rgba(255,255,255,0.02)",
+                                                        background: "var(--admin-card-inner)",
                                                         border: "1px solid var(--admin-border)",
                                                         borderRadius: "var(--admin-radius-md)",
                                                         display: "flex",
@@ -386,8 +386,8 @@ export default function AdminUsersPage() {
                                                     }}
                                                 >
                                                     <div>
-                                                        <div style={{ fontWeight: "600", color: "#ffffff", fontSize: "0.85rem" }}>
-                                                            {b.services?.[0]?.name || "Service"} • ₹{b.estimatedTotal}
+                                                        <div style={{ fontWeight: "600", color: "var(--admin-text-main)", fontSize: "0.85rem" }}>
+                                                             {b.services?.[0]?.name || "Service"} • ₹{b.estimatedTotal}
                                                         </div>
                                                         <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>
                                                             Provider: {b.assignedProviderId?.name || "Pending Dispatch"} • {new Date(b.createdAt).toLocaleDateString()}
@@ -434,7 +434,7 @@ export default function AdminUsersPage() {
                                         {actionError}
                                     </div>
                                 )}
-                                <p style={{ margin: 0, fontSize: "0.875rem", color: "#cbd5e1" }}>
+                                <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--admin-text-main)" }}>
                                     Are you sure you want to <strong>{actionTarget.action}</strong> the customer account for{" "}
                                     <strong>{actionTarget.customer.name}</strong> ({actionTarget.customer.email})?
                                 </p>

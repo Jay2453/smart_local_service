@@ -165,7 +165,7 @@ export default function AdminNotificationsPage() {
                                 <tbody>
                                     {notifications.map((n) => (
                                         <tr key={n._id}>
-                                            <td style={{ fontWeight: "600", color: "#ffffff" }}>
+                                            <td style={{ fontWeight: "600", color: "var(--admin-text-main)" }}>
                                                 {n.title}
                                             </td>
                                             <td>
@@ -176,11 +176,11 @@ export default function AdminNotificationsPage() {
                                             <td style={{ textTransform: "capitalize", color: "var(--admin-text-muted)" }}>
                                                 {n.type}
                                             </td>
-                                            <td style={{ fontSize: "0.8rem", color: "#86efac" }}>
+                                            <td style={{ fontSize: "0.8rem", color: "var(--admin-primary-darker)", fontWeight: "600" }}>
                                                 {n.sentByAdminId?.name || "System"}
                                             </td>
                                             <td style={{ maxWidth: "300px" }}>
-                                                <div style={{ fontSize: "0.85rem", color: "#cbd5e1", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                <div style={{ fontSize: "0.85rem", color: "var(--admin-text-body)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                                     {n.message}
                                                 </div>
                                             </td>

@@ -66,7 +66,7 @@ export default function AdminDashboardView() {
                     <div className="empty-state-icon" style={{ background: "rgba(239, 68, 68, 0.15)", color: "#ef4444" }}>
                         <AlertTriangle size={28} />
                     </div>
-                    <h3 style={{ color: "#ffffff", marginBottom: "8px" }}>Unable to Load Dashboard Data</h3>
+                    <h3 style={{ color: "var(--admin-text-main)", marginBottom: "8px" }}>Unable to Load Dashboard Data</h3>
                     <p style={{ color: "var(--admin-text-muted)", marginBottom: "20px" }}>{error}</p>
                     <button className="btn-primary" onClick={fetchDashboard}>
                         <RefreshCw size={16} /> Retry Connection
@@ -106,8 +106,8 @@ export default function AdminDashboardView() {
             {hasPendingActions && (
                 <div
                     style={{
-                        background: "rgba(245, 158, 11, 0.1)",
-                        border: "1px solid rgba(245, 158, 11, 0.3)",
+                        background: "var(--admin-warning-bg)",
+                        border: "1px solid var(--admin-warning-border)",
                         borderRadius: "var(--admin-radius-lg)",
                         padding: "16px 20px",
                         marginBottom: "24px",
@@ -119,14 +119,14 @@ export default function AdminDashboardView() {
                     }}
                 >
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div style={{ padding: "8px", background: "rgba(245, 158, 11, 0.2)", borderRadius: "8px" }}>
-                            <AlertTriangle size={20} color="#f59e0b" />
+                        <div style={{ padding: "8px", background: "#FEF3C7", borderRadius: "8px" }}>
+                            <AlertTriangle size={20} color="#D97706" />
                         </div>
                         <div>
-                            <div style={{ fontWeight: "700", color: "#fef08a", fontSize: "0.95rem" }}>
+                            <div style={{ fontWeight: "700", color: "var(--admin-warning)", fontSize: "0.95rem" }}>
                                 Operations Requiring Administrator Review
                             </div>
-                            <div style={{ fontSize: "0.825rem", color: "#cbd5e1" }}>
+                            <div style={{ fontSize: "0.825rem", color: "var(--admin-text-body)" }}>
                                 {pendingVerifications > 0 && `${pendingVerifications} Pending Provider Document(s) • `}
                                 {pendingBookings > 0 && `${pendingBookings} Unassigned Booking(s) • `}
                                 {openSupport > 0 && `${openSupport} Open Support Ticket(s)`}
@@ -208,7 +208,7 @@ export default function AdminDashboardView() {
                     </div>
                     <div className="stat-value" style={{ color: "#04b204" }}>₹{stats?.finances?.totalRevenue?.toLocaleString() || 0}</div>
                     <div className="stat-subtext">
-                        <span style={{ color: "#86efac", fontWeight: "600" }}>₹{stats?.finances?.commissionEarned?.toLocaleString() || 0} Commission</span>
+                        <span style={{ color: "var(--admin-primary-darker)", fontWeight: "600" }}>₹{stats?.finances?.commissionEarned?.toLocaleString() || 0} Commission</span>
                     </div>
                 </div>
             </div>
@@ -240,7 +240,7 @@ export default function AdminDashboardView() {
                                         <span style={{ color: "var(--admin-text-main)" }}>{b.label}</span>
                                         <span style={{ color: "var(--admin-text-muted)", fontWeight: "600" }}>{b.count} ({pct}%)</span>
                                     </div>
-                                    <div style={{ height: "6px", background: "rgba(255,255,255,0.06)", borderRadius: "3px", overflow: "hidden" }}>
+                                    <div style={{ height: "6px", background: "var(--admin-border-light)", borderRadius: "3px", overflow: "hidden" }}>
                                         <div style={{ width: `${pct}%`, height: "100%", background: b.color, borderRadius: "3px" }} />
                                     </div>
                                 </div>
@@ -259,27 +259,27 @@ export default function AdminDashboardView() {
                     </div>
 
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginTop: "14px" }}>
-                        <div style={{ background: "rgba(255,255,255,0.03)", padding: "16px", borderRadius: "var(--admin-radius-md)", border: "1px solid var(--admin-border)" }}>
+                        <div style={{ background: "var(--admin-card-inner)", padding: "16px", borderRadius: "var(--admin-radius-md)", border: "1px solid var(--admin-border)" }}>
                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-muted)", marginBottom: "4px" }}>Platform Commission</div>
                             <div style={{ fontSize: "1.4rem", fontWeight: "700", color: "#10b981" }}>₹{stats?.finances?.commissionEarned?.toLocaleString() || 0}</div>
                             <div style={{ fontSize: "0.7rem", color: "var(--admin-text-sub)", marginTop: "4px" }}>10% Platform Share</div>
                         </div>
 
-                        <div style={{ background: "rgba(255,255,255,0.03)", padding: "16px", borderRadius: "var(--admin-radius-md)", border: "1px solid var(--admin-border)" }}>
+                        <div style={{ background: "var(--admin-card-inner)", padding: "16px", borderRadius: "var(--admin-radius-md)", border: "1px solid var(--admin-border)" }}>
                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-muted)", marginBottom: "4px" }}>Pending Payouts</div>
                             <div style={{ fontSize: "1.4rem", fontWeight: "700", color: "#f59e0b" }}>₹{stats?.finances?.pendingPayouts?.toLocaleString() || 0}</div>
                             <div style={{ fontSize: "0.7rem", color: "var(--admin-text-sub)", marginTop: "4px" }}>Due to Providers</div>
                         </div>
 
-                        <div style={{ background: "rgba(255,255,255,0.03)", padding: "16px", borderRadius: "var(--admin-radius-md)", border: "1px solid var(--admin-border)" }}>
+                        <div style={{ background: "var(--admin-card-inner)", padding: "16px", borderRadius: "var(--admin-radius-md)", border: "1px solid var(--admin-border)" }}>
                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-muted)", marginBottom: "4px" }}>Online Providers</div>
-                            <div style={{ fontSize: "1.4rem", fontWeight: "700", color: "#38bdf8" }}>{stats?.providers?.online || 0}</div>
+                            <div style={{ fontSize: "1.4rem", fontWeight: "700", color: "#0284c7" }}>{stats?.providers?.online || 0}</div>
                             <div style={{ fontSize: "0.7rem", color: "var(--admin-text-sub)", marginTop: "4px" }}>Currently Active</div>
                         </div>
 
-                        <div style={{ background: "rgba(255,255,255,0.03)", padding: "16px", borderRadius: "var(--admin-radius-md)", border: "1px solid var(--admin-border)" }}>
+                        <div style={{ background: "var(--admin-card-inner)", padding: "16px", borderRadius: "var(--admin-radius-md)", border: "1px solid var(--admin-border)" }}>
                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-muted)", marginBottom: "4px" }}>Support Tickets</div>
-                            <div style={{ fontSize: "1.4rem", fontWeight: "700", color: stats?.support?.open > 0 ? "#f59e0b" : "#ffffff" }}>
+                            <div style={{ fontSize: "1.4rem", fontWeight: "700", color: stats?.support?.open > 0 ? "#f59e0b" : "var(--admin-text-main)" }}>
                                 {stats?.support?.open || 0}
                             </div>
                             <div style={{ fontSize: "0.7rem", color: "var(--admin-text-sub)", marginTop: "4px" }}>Awaiting Resolution</div>
@@ -354,14 +354,14 @@ export default function AdminDashboardView() {
                                         alignItems: "flex-start",
                                         justifyContent: "space-between",
                                         padding: "10px 12px",
-                                        background: "rgba(255, 255, 255, 0.02)",
+                                        background: "var(--admin-card-inner)",
                                         border: "1px solid var(--admin-border)",
                                         borderRadius: "var(--admin-radius-md)",
                                         fontSize: "0.825rem",
                                     }}
                                 >
                                     <div>
-                                        <div style={{ fontWeight: "600", color: "#ffffff", marginBottom: "2px" }}>
+                                        <div style={{ fontWeight: "600", color: "var(--admin-text-main)", marginBottom: "2px" }}>
                                             {log.description}
                                         </div>
                                         <div style={{ color: "var(--admin-text-sub)", fontSize: "0.75rem" }}>

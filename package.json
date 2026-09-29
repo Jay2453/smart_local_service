@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "seed:admin": "node scripts/seed-admin.mjs"
-  },
+  "dev": "next dev",
+  "smartserve": "npm run seed:admin && npm run dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "eslint",
+  "seed:admin": "node scripts/seed-admin.mjs"
+},
   "dependencies": {
     "@lordicon/react": "^1.11.0",
     "bcryptjs": "^3.0.3",

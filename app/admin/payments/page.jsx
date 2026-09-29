@@ -224,7 +224,7 @@ export default function AdminPaymentsPage() {
             {/* Filter Bar */}
             <div className="admin-card" style={{ padding: "16px 20px", marginBottom: "20px" }}>
                 <div className="filter-bar" style={{ margin: 0 }}>
-                    <div style={{ fontSize: "0.9rem", fontWeight: "600", color: "#ffffff" }}>
+                    <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--admin-text-main)" }}>
                         Transaction Ledger Filters
                     </div>
 
@@ -300,16 +300,16 @@ export default function AdminPaymentsPage() {
                                                 #{p._id.toString().slice(-6)}
                                             </td>
                                             <td>
-                                                <div style={{ fontWeight: "600", color: "#ffffff" }}>
+                                                <div style={{ fontWeight: "600", color: "var(--admin-text-main)" }}>
                                                     {p.customerId?.name || "Customer"}
                                                 </div>
                                             </td>
                                             <td>
-                                                <div style={{ fontWeight: "600", color: "#86efac" }}>
+                                                <div style={{ fontWeight: "600", color: "var(--admin-primary-darker)" }}>
                                                     {p.providerId?.name || "Provider"}
                                                 </div>
                                             </td>
-                                            <td style={{ fontWeight: "700", color: "#ffffff" }}>
+                                            <td style={{ fontWeight: "700", color: "var(--admin-text-main)" }}>
                                                 ₹{p.amount}
                                             </td>
                                             <td style={{ textTransform: "uppercase", fontSize: "0.75rem", fontWeight: "600" }}>

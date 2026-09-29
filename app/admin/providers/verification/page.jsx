@@ -131,12 +131,13 @@ export default function AdminVerificationPage() {
                                 padding: "8px 18px",
                                 borderRadius: "var(--admin-radius-md)",
                                 fontSize: "0.85rem",
-                                fontWeight: statusTab === tab.key ? "700" : "500",
-                                background: statusTab === tab.key ? "var(--admin-primary)" : "rgba(255,255,255,0.05)",
-                                color: statusTab === tab.key ? "#ffffff" : "var(--admin-text-muted)",
-                                border: "1px solid var(--admin-border)",
+                                fontWeight: statusTab === tab.key ? "700" : "600",
+                                background: statusTab === tab.key ? "var(--admin-primary-gradient)" : "#FFFFFF",
+                                color: statusTab === tab.key ? "#ffffff" : "var(--admin-text-body)",
+                                border: `1.5px solid ${statusTab === tab.key ? "transparent" : "var(--admin-border)"}`,
                                 cursor: "pointer",
                                 transition: "all 0.2s ease",
+                                boxShadow: statusTab === tab.key ? "var(--admin-shadow-green-sm)" : "none",
                             }}
                         >
                             {tab.label}
@@ -156,14 +157,14 @@ export default function AdminVerificationPage() {
                 ) : error ? (
                     <div className="empty-state">
                         <AlertTriangle size={32} color="#ef4444" style={{ marginBottom: "12px" }} />
-                        <p style={{ color: "#fca5a5" }}>{error}</p>
+                        <p style={{ color: "var(--admin-danger)" }}>{error}</p>
                         <button className="btn-primary" onClick={fetchVerifications} style={{ marginTop: "12px" }}>
                             Retry
                         </button>
                     </div>
                 ) : verifications.length === 0 ? (
                     <div className="empty-state">
-                        <ShieldCheck size={36} color="#10b981" style={{ marginBottom: "12px" }} />
+                        <ShieldCheck size={36} color="#04b204" style={{ marginBottom: "12px" }} />
                         <h3>No Verifications in this Queue</h3>
                         <p>There are no submissions currently matching the &apos;{statusTab}&apos; status filter.</p>
                     </div>
@@ -184,7 +185,7 @@ export default function AdminVerificationPage() {
                                 {verifications.map((item) => (
                                     <tr key={item._id}>
                                         <td>
-                                            <div style={{ fontWeight: "600", color: "#ffffff" }}>
+                                            <div style={{ fontWeight: "600", color: "var(--admin-text-main)" }}>
                                                 {item.providerId?.name || "Provider"}
                                             </div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>
@@ -263,10 +264,10 @@ export default function AdminVerificationPage() {
                                 )}
 
                                 {/* Provider Overview */}
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", background: "rgba(255,255,255,0.03)", padding: "14px", borderRadius: "var(--admin-radius-md)" }}>
+                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", background: "var(--admin-card-inner)", padding: "14px", borderRadius: "var(--admin-radius-md)", border: "1px solid var(--admin-border)" }}>
                                     <div>
                                         <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Provider Name & Profession</div>
-                                        <div style={{ fontWeight: "700", color: "#ffffff" }}>
+                                        <div style={{ fontWeight: "700", color: "var(--admin-text-main)" }}>
                                             {selectedItem.providerId?.name} ({selectedItem.providerId?.Proffesion})
                                         </div>
                                     </div>
@@ -276,30 +277,30 @@ export default function AdminVerificationPage() {
                                     </div>
                                     <div>
                                         <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Experience & Radius</div>
-                                        <div style={{ color: "#cbd5e1", fontSize: "0.85rem" }}>
+                                        <div style={{ color: "var(--admin-text-body)", fontSize: "0.85rem" }}>
                                             {selectedItem.providerId?.Experience} • {selectedItem.providerId?.ServiceRadius}
                                         </div>
                                     </div>
                                     <div>
                                         <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Base Address</div>
-                                        <div style={{ color: "#cbd5e1", fontSize: "0.85rem" }}>{selectedItem.providerId?.address}</div>
+                                        <div style={{ color: "var(--admin-text-body)", fontSize: "0.85rem" }}>{selectedItem.providerId?.address}</div>
                                     </div>
                                 </div>
 
                                 {/* Document Viewers */}
                                 <div>
-                                    <h4 style={{ margin: "0 0 12px 0", color: "#ffffff", fontSize: "0.95rem" }}>
+                                    <h4 style={{ margin: "0 0 12px 0", color: "var(--admin-text-main)", fontSize: "0.95rem" }}>
                                         Submitted Identification ({selectedItem.documentType?.toUpperCase()}) & Live Selfie
                                     </h4>
 
                                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                                         {/* Gov ID Card */}
-                                        <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid var(--admin-border)", borderRadius: "var(--admin-radius-md)", padding: "12px", textAlign: "center" }}>
+                                        <div style={{ background: "var(--admin-card-inner)", border: "1px solid var(--admin-border)", borderRadius: "var(--admin-radius-md)", padding: "12px", textAlign: "center" }}>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-muted)", marginBottom: "8px", fontWeight: "600" }}>
                                                 Government ID Document
                                             </div>
                                             {selectedItem.documentPath ? (
-                                                <div style={{ position: "relative", minHeight: "180px", background: "#0a0f1d", borderRadius: "8px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                <div style={{ position: "relative", minHeight: "180px", background: "#F3F4F6", border: "1px solid var(--admin-border)", borderRadius: "8px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
                                                     <img
                                                         src={selectedItem.documentPath}
                                                         alt="Government ID"
@@ -320,12 +321,12 @@ export default function AdminVerificationPage() {
                                         </div>
 
                                         {/* Selfie Photo */}
-                                        <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid var(--admin-border)", borderRadius: "var(--admin-radius-md)", padding: "12px", textAlign: "center" }}>
+                                        <div style={{ background: "var(--admin-card-inner)", border: "1px solid var(--admin-border)", borderRadius: "var(--admin-radius-md)", padding: "12px", textAlign: "center" }}>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-muted)", marginBottom: "8px", fontWeight: "600" }}>
                                                 Live Verification Selfie
                                             </div>
                                             {selectedItem.selfiePath ? (
-                                                <div style={{ position: "relative", minHeight: "180px", background: "#0a0f1d", borderRadius: "8px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                <div style={{ position: "relative", minHeight: "180px", background: "#F3F4F6", border: "1px solid var(--admin-border)", borderRadius: "8px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
                                                     <img
                                                         src={selectedItem.selfiePath}
                                                         alt="Verification Selfie"
@@ -349,7 +350,7 @@ export default function AdminVerificationPage() {
 
                                 {/* Decision Controls */}
                                 <div style={{ borderTop: "1px solid var(--admin-border)", paddingTop: "16px" }}>
-                                    <h4 style={{ margin: "0 0 10px 0", color: "#ffffff", fontSize: "0.95rem" }}>
+                                    <h4 style={{ margin: "0 0 10px 0", color: "var(--admin-text-main)", fontSize: "0.95rem" }}>
                                         Administrator Decision
                                     </h4>
 
@@ -359,9 +360,9 @@ export default function AdminVerificationPage() {
                                                 flex: 1,
                                                 padding: "10px 14px",
                                                 borderRadius: "var(--admin-radius-md)",
-                                                border: `2px solid ${decisionAction === "verified" ? "#10b981" : "var(--admin-border)"}`,
-                                                background: decisionAction === "verified" ? "rgba(16, 185, 129, 0.15)" : "transparent",
-                                                color: decisionAction === "verified" ? "#86efac" : "var(--admin-text-muted)",
+                                                border: `2px solid ${decisionAction === "verified" ? "#04b204" : "var(--admin-border)"}`,
+                                                background: decisionAction === "verified" ? "var(--admin-primary-light)" : "#FFFFFF",
+                                                color: decisionAction === "verified" ? "var(--admin-primary-darker)" : "var(--admin-text-body)",
                                                 cursor: "pointer",
                                                 display: "flex",
                                                 alignItems: "center",
@@ -387,8 +388,8 @@ export default function AdminVerificationPage() {
                                                 padding: "10px 14px",
                                                 borderRadius: "var(--admin-radius-md)",
                                                 border: `2px solid ${decisionAction === "rejected" ? "#ef4444" : "var(--admin-border)"}`,
-                                                background: decisionAction === "rejected" ? "rgba(239, 68, 68, 0.15)" : "transparent",
-                                                color: decisionAction === "rejected" ? "#fca5a5" : "var(--admin-text-muted)",
+                                                background: decisionAction === "rejected" ? "var(--admin-danger-bg)" : "#FFFFFF",
+                                                color: decisionAction === "rejected" ? "var(--admin-danger)" : "var(--admin-text-body)",
                                                 cursor: "pointer",
                                                 display: "flex",
                                                 alignItems: "center",

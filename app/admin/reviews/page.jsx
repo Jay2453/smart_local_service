@@ -213,12 +213,12 @@ export default function AdminReviewsPage() {
                                                 </div>
                                             </td>
                                             <td>
-                                                <div style={{ fontWeight: "600", color: "#ffffff" }}>
+                                                <div style={{ fontWeight: "600", color: "var(--admin-text-main)" }}>
                                                     {r.customerId?.name || "Customer"}
                                                 </div>
                                             </td>
                                             <td>
-                                                <div style={{ fontWeight: "600", color: "#86efac" }}>
+                                                <div style={{ fontWeight: "600", color: "var(--admin-primary-darker)" }}>
                                                     {r.providerId?.name || "Provider"}
                                                 </div>
                                                 <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>
@@ -226,7 +226,7 @@ export default function AdminReviewsPage() {
                                                 </div>
                                             </td>
                                             <td style={{ maxWidth: "300px" }}>
-                                                <div style={{ fontSize: "0.85rem", color: "#cbd5e1", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                <div style={{ fontSize: "0.85rem", color: "var(--admin-text-body)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                                     {r.comment || "(No text comment provided)"}
                                                 </div>
                                             </td>
@@ -301,16 +301,16 @@ export default function AdminReviewsPage() {
                                     </div>
                                 )}
 
-                                <div style={{ background: "rgba(0,0,0,0.3)", padding: "14px", borderRadius: "var(--admin-radius-md)" }}>
+                                <div style={{ background: "var(--admin-card-inner)", border: "1px solid var(--admin-border)", padding: "14px", borderRadius: "var(--admin-radius-md)" }}>
                                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                                        <div style={{ fontWeight: "700", color: "#ffffff" }}>
+                                        <div style={{ fontWeight: "700", color: "var(--admin-text-main)" }}>
                                             {selectedReview.customerId?.name} → {selectedReview.providerId?.name}
                                         </div>
-                                        <div style={{ color: "#fbbf24", fontWeight: "700" }}>
+                                        <div style={{ color: "#d97706", fontWeight: "700" }}>
                                             ★ {selectedReview.rating} / 5
                                         </div>
                                     </div>
-                                    <p style={{ margin: 0, fontSize: "0.85rem", color: "#cbd5e1", fontStyle: "italic" }}>
+                                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--admin-text-body)", fontStyle: "italic" }}>
                                         &quot;{selectedReview.comment || "No comment"}&quot;
                                     </p>
                                 </div>

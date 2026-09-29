@@ -234,7 +234,7 @@ export default function AdminProvidersPage() {
                                         return (
                                             <tr key={p._id}>
                                                 <td>
-                                                    <div style={{ fontWeight: "600", color: "#ffffff" }}>{p.name}</div>
+                                                    <div style={{ fontWeight: "600", color: "var(--admin-text-main)" }}>{p.name}</div>
                                                     <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)", fontFamily: "monospace" }}>
                                                         {p.phone} • {p.email}
                                                     </div>
@@ -340,26 +340,26 @@ export default function AdminProvidersPage() {
                                 </div>
                             ) : (
                                 <div>
-                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", background: "rgba(255,255,255,0.03)", padding: "16px", borderRadius: "var(--admin-radius-md)", marginBottom: "20px" }}>
+                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", background: "var(--admin-card-inner)", padding: "16px", borderRadius: "var(--admin-radius-md)", marginBottom: "20px", border: "1px solid var(--admin-border)" }}>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Provider Name</div>
-                                            <div style={{ fontWeight: "700", color: "#ffffff", fontSize: "1.1rem" }}>{selectedProvider.name}</div>
+                                            <div style={{ fontWeight: "700", color: "var(--admin-text-main)", fontSize: "1.1rem" }}>{selectedProvider.name}</div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Profession / Category</div>
-                                            <div style={{ textTransform: "capitalize", fontWeight: "600", color: "#86efac" }}>{selectedProvider.Proffesion}</div>
+                                            <div style={{ textTransform: "capitalize", fontWeight: "700", color: "var(--admin-primary-darker)" }}>{selectedProvider.Proffesion}</div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Contact Phone & Email</div>
-                                            <div style={{ color: "#cbd5e1", fontSize: "0.85rem" }}>{selectedProvider.phone} • {selectedProvider.email}</div>
+                                            <div style={{ color: "var(--admin-text-body)", fontSize: "0.85rem" }}>{selectedProvider.phone} • {selectedProvider.email}</div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Service Radius & Experience</div>
-                                            <div style={{ color: "#cbd5e1", fontSize: "0.85rem" }}>{selectedProvider.ServiceRadius} • {selectedProvider.Experience}</div>
+                                            <div style={{ color: "var(--admin-text-body)", fontSize: "0.85rem" }}>{selectedProvider.ServiceRadius} • {selectedProvider.Experience}</div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Address / Base Location</div>
-                                            <div style={{ color: "#cbd5e1", fontSize: "0.85rem" }}>{selectedProvider.address}</div>
+                                            <div style={{ color: "var(--admin-text-body)", fontSize: "0.85rem" }}>{selectedProvider.address}</div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: "0.75rem", color: "var(--admin-text-sub)" }}>Verification & Online</div>
@@ -375,7 +375,7 @@ export default function AdminProvidersPage() {
                                     </div>
 
                                     {/* Assigned Jobs Summary */}
-                                    <h4 style={{ margin: "0 0 10px 0", color: "#ffffff", fontSize: "0.95rem" }}>
+                                    <h4 style={{ margin: "0 0 10px 0", color: "var(--admin-text-main)", fontSize: "0.95rem" }}>
                                         Assigned Bookings ({providerDetails?.bookings?.length || 0})
                                     </h4>
                                     {providerDetails?.bookings?.length > 0 ? (
@@ -385,7 +385,7 @@ export default function AdminProvidersPage() {
                                                     key={b._id}
                                                     style={{
                                                         padding: "10px 12px",
-                                                        background: "rgba(255,255,255,0.02)",
+                                                        background: "var(--admin-card-inner)",
                                                         border: "1px solid var(--admin-border)",
                                                         borderRadius: "var(--admin-radius-md)",
                                                         display: "flex",
@@ -395,7 +395,7 @@ export default function AdminProvidersPage() {
                                                     }}
                                                 >
                                                     <div>
-                                                        <span style={{ fontWeight: "600", color: "#ffffff" }}>{b.services?.[0]?.name}</span> • ₹{b.estimatedTotal} • {b.customerId?.name}
+                                                        <span style={{ fontWeight: "600", color: "var(--admin-text-main)" }}>{b.services?.[0]?.name}</span> • ₹{b.estimatedTotal} • {b.customerId?.name}
                                                     </div>
                                                     <span className={`status-pill ${b.status}`}>{b.status.replace("_", " ")}</span>
                                                 </div>

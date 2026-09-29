@@ -322,7 +322,7 @@ export default function AdminLayoutClient({ children, admin }) {
                                 </div>
 
                                 <div style={{ borderTop: "1px solid var(--admin-border)", paddingTop: "14px", marginTop: "6px" }}>
-                                    <h4 style={{ margin: "0 0 12px 0", fontSize: "0.95rem", color: "#ffffff" }}>Change Password (Optional)</h4>
+                                    <h4 style={{ margin: "0 0 12px 0", fontSize: "0.95rem", color: "var(--admin-text-main)" }}>Change Password (Optional)</h4>
 
                                     <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                                         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
