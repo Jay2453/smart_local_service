@@ -131,9 +131,12 @@ function RequestCard({
   );
 }
 
-function ScheduleItem({ item, onUpdateStatus }) {
+function ScheduleItem({ item, onUpdateStatus, paymentStatus }) {
   const meta = getServiceMeta(item.title);
   const Icon = meta.icon;
+
+  const isPaid = paymentStatus === "paid" || paymentStatus === "completed";
+  const isProcessing = paymentStatus === "created";
 
   return (
     <div className={styles.scheduleItem}>
@@ -155,6 +158,37 @@ function ScheduleItem({ item, onUpdateStatus }) {
             {item.status === "in_progress" ? "● In Progress" : "● Scheduled"}
           </div>
         )}
+        {/* Payment status badge — no sensitive info exposed */}
+        <div style={{ marginTop: "4px" }}>
+          {isPaid ? (
+            <span style={{
+              fontSize: "11px", fontWeight: "700",
+              color: "#15803d", background: "#f0fdf4",
+              border: "1px solid #bbf7d0", borderRadius: "6px",
+              padding: "2px 7px", display: "inline-block",
+            }}>
+              ✓ Payment: PAID
+            </span>
+          ) : isProcessing ? (
+            <span style={{
+              fontSize: "11px", fontWeight: "700",
+              color: "#4338ca", background: "#f0f4ff",
+              border: "1px solid #c7d2fe", borderRadius: "6px",
+              padding: "2px 7px", display: "inline-block",
+            }}>
+              Payment: Verifying...
+            </span>
+          ) : (
+            <span style={{
+              fontSize: "11px", fontWeight: "700",
+              color: "#b45309", background: "#fffbeb",
+              border: "1px solid #fde68a", borderRadius: "6px",
+              padding: "2px 7px", display: "inline-block",
+            }}>
+              Payment: Pending
+            </span>
+          )}
+        </div>
       </div>
       <div className={styles.scheduleMeta}>
         <div className={styles.scheduleTime}>{item.time}</div>
@@ -252,6 +286,9 @@ export default function ProviderDashboard() {
   const [schedule, setSchedule] = useState([]);
   const [reviews, setReviews] = useState([]);
 
+  // Payment statuses for scheduled bookings (keyed by bookingId)
+  const [schedulePaymentStatuses, setSchedulePaymentStatuses] = useState({});
+
   const showNotification = (message, type = "error") => {
     setNotification({
       show: true,
@@ -288,6 +325,7 @@ export default function ProviderDashboard() {
           const formattedSchedule = data.schedule.map((b) => ({
             id: b._id,
             rawId: b._id,
+            bookingId: b._id,
             title: b.services?.[0]?.name || "Home Service",
             customer: b.customerId?.name || "Customer",
             time: `${b.preferredDate} (${b.preferredTime})`,
@@ -295,6 +333,24 @@ export default function ProviderDashboard() {
             status: b.status,
           }));
           setSchedule(formattedSchedule);
+
+          // Fetch payment statuses for each scheduled booking
+          const statusMap = {};
+          await Promise.allSettled(
+            formattedSchedule.map(async (item) => {
+              try {
+                const pRes = await fetch(`/api/payment/status?bookingId=${item.bookingId}`);
+                if (!pRes.ok) return;
+                const pData = await pRes.json();
+                if (pData.success && pData.payment) {
+                  statusMap[item.bookingId] = pData.payment.status;
+                }
+              } catch {
+                // silently ignore
+              }
+            })
+          );
+          setSchedulePaymentStatuses((prev) => ({ ...prev, ...statusMap }));
         }
 
         // Format reviews
@@ -672,6 +728,7 @@ export default function ProviderDashboard() {
                         key={s.id}
                         item={s}
                         onUpdateStatus={handleUpdateJobStatus}
+                        paymentStatus={schedulePaymentStatuses[s.bookingId || s.rawId]}
                       />
                     ))
                   )}

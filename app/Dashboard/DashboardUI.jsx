@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import {
   Hammer,
   Zap,
@@ -18,10 +19,14 @@ import {
   ChevronRight,
   Star,
   Phone,
+  CreditCard,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 
 import styles from "./customer.module.css";
 import NotificationBanner from "../../components/NotificationBanner/NotificationBanner";
+import RazorpayButton from "../../components/RazorpayButton/RazorpayButton";
 
 const SERVICES = [
   {
@@ -209,6 +214,7 @@ function SummaryRow({
 // ---- Main component -------
 
 export default function BookService() {
+  const router = useRouter();
 
   const [FormData, setFormData] = useState({
     address: "",
@@ -238,6 +244,8 @@ export default function BookService() {
 
   const fileInputRef = useRef(null);
 
+  // Payment statuses for each booking (keyed by bookingId)
+  const [paymentStatuses, setPaymentStatuses] = useState({});
 
   const [activeView, setActiveView] = useState("book");
   const [myBookings, setMyBookings] = useState([]);
@@ -254,6 +262,27 @@ export default function BookService() {
     type: "error",
   });
 
+  // Fetch payment status for all bookings
+  const fetchPaymentStatuses = useCallback(async (bookings) => {
+    if (!bookings || bookings.length === 0) return;
+    const statusMap = {};
+    await Promise.allSettled(
+      bookings.map(async (b) => {
+        try {
+          const res = await fetch(`/api/payment/status?bookingId=${b._id}`);
+          if (!res.ok) return;
+          const data = await res.json();
+          if (data.success && data.payment) {
+            statusMap[b._id] = data.payment;
+          }
+        } catch {
+          // silently ignore individual fetch errors
+        }
+      })
+    );
+    setPaymentStatuses((prev) => ({ ...prev, ...statusMap }));
+  }, []);
+
   const fetchMyBookings = useCallback(async () => {
     try {
       const res = await fetch("/api/bookings");
@@ -261,11 +290,12 @@ export default function BookService() {
       const data = await res.json();
       if (data.success && Array.isArray(data.bookings)) {
         setMyBookings(data.bookings);
+        fetchPaymentStatuses(data.bookings);
       }
     } catch (err) {
       console.error("Fetch my bookings error:", err);
     }
-  }, []);
+  }, [fetchPaymentStatuses]);
 
   useEffect(() => {
     let isMounted = true;
@@ -276,6 +306,7 @@ export default function BookService() {
         const data = await res.json();
         if (isMounted && data.success && Array.isArray(data.bookings)) {
           setMyBookings(data.bookings);
+          fetchPaymentStatuses(data.bookings);
         }
       } catch (err) {
         console.error("Fetch my bookings error:", err);
@@ -288,7 +319,7 @@ export default function BookService() {
       isMounted = false;
       clearInterval(interval);
     };
-  }, []);
+  }, [fetchPaymentStatuses]);
 
   const formatDate = (dateString) => {
     if (!dateString) return "Select date";
@@ -878,48 +909,96 @@ export default function BookService() {
                                 </button>
                               )}
 
-                              {b.status === "completed" && (
-                                <>
-                                  <button
-                                    type="button"
-                                    onClick={() => handlePayment(b._id, "cash")}
-                                    style={{
-                                      background: "none",
-                                      border: "1px solid #86EFAC",
-                                      color: "#16A34A",
-                                      padding: "6px 12px",
-                                      borderRadius: "8px",
-                                      fontSize: "13px",
-                                      fontWeight: "600",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    Confirm Payment (₹{b.estimatedTotal})
-                                  </button>
+                              {b.status === "completed" && (() => {
+                                const pmt = paymentStatuses[b._id];
+                                const isPaid = pmt?.status === "paid" || pmt?.status === "completed";
+                                const isFailed = pmt?.status === "failed";
+                                const isProcessing = pmt?.status === "created";
 
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      setReviewForm((prev) => ({
-                                        ...prev,
-                                        bookingId: prev.bookingId === b._id ? null : b._id,
-                                      }))
-                                    }
-                                    style={{
-                                      background: "var(--green)",
-                                      border: "none",
-                                      color: "#ffffff",
-                                      padding: "6px 14px",
-                                      borderRadius: "8px",
-                                      fontSize: "13px",
-                                      fontWeight: "600",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    {reviewForm.bookingId === b._id ? "Close Review" : "Leave Review"}
-                                  </button>
-                                </>
-                              )}
+                                return (
+                                  <>
+                                    {/* Payment status badge */}
+                                    {isPaid && (
+                                      <span style={{
+                                        display: "inline-flex", alignItems: "center", gap: "4px",
+                                        background: "#f0fdf4", color: "#15803d",
+                                        border: "1px solid #bbf7d0",
+                                        borderRadius: "8px", padding: "5px 10px",
+                                        fontSize: "12.5px", fontWeight: "700",
+                                      }}>
+                                        <CheckCircle2 size={13} /> Payment Successful
+                                      </span>
+                                    )}
+
+                                    {isFailed && (
+                                      <span style={{
+                                        display: "inline-flex", alignItems: "center", gap: "4px",
+                                        background: "#fef2f2", color: "#b91c1c",
+                                        border: "1px solid #fecaca",
+                                        borderRadius: "8px", padding: "5px 10px",
+                                        fontSize: "12.5px", fontWeight: "700",
+                                      }}>
+                                        <XCircle size={13} /> Payment Failed
+                                      </span>
+                                    )}
+
+                                    {isProcessing && (
+                                      <span style={{
+                                        display: "inline-flex", alignItems: "center", gap: "4px",
+                                        background: "#f0f4ff", color: "#4338ca",
+                                        border: "1px solid #c7d2fe",
+                                        borderRadius: "8px", padding: "5px 10px",
+                                        fontSize: "12.5px", fontWeight: "700",
+                                      }}>
+                                        Verifying...
+                                      </span>
+                                    )}
+
+                                    {/* Razorpay Pay button — shown only when NOT paid */}
+                                    {!isPaid && (
+                                      <RazorpayButton
+                                        bookingId={b._id}
+                                        estimatedTotal={b.estimatedTotal}
+                                        serviceNames={b.services?.map((s) => s.name).join(", ")}
+                                        onSuccess={({ bookingId: bid }) => {
+                                          showNotification("Payment verified successfully!", "success");
+                                          router.push(`/payment/success?bookingId=${bid}`);
+                                        }}
+                                        onFailure={(reason) => {
+                                          showNotification(reason || "Payment failed. Please try again.", "error");
+                                          fetchMyBookings();
+                                        }}
+                                        onCancel={() => {
+                                          showNotification("Payment cancelled. You can try again anytime.", "error");
+                                        }}
+                                      />
+                                    )}
+
+                                    {/* Leave Review button */}
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        setReviewForm((prev) => ({
+                                          ...prev,
+                                          bookingId: prev.bookingId === b._id ? null : b._id,
+                                        }))
+                                      }
+                                      style={{
+                                        background: "var(--green)",
+                                        border: "none",
+                                        color: "#ffffff",
+                                        padding: "6px 14px",
+                                        borderRadius: "8px",
+                                        fontSize: "13px",
+                                        fontWeight: "600",
+                                        cursor: "pointer",
+                                      }}
+                                    >
+                                      {reviewForm.bookingId === b._id ? "Close Review" : "Leave Review"}
+                                    </button>
+                                  </>
+                                );
+                              })()}
                             </div>
                           </div>
 

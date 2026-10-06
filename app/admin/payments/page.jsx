@@ -238,8 +238,11 @@ export default function AdminPaymentsPage() {
                             }}
                         >
                             <option value="all">All Payment Statuses</option>
-                            <option value="completed">Completed</option>
+                            <option value="paid">Paid (Razorpay)</option>
+                            <option value="completed">Completed (Cash)</option>
+                            <option value="created">Created (Awaiting)</option>
                             <option value="pending">Pending</option>
+                            <option value="failed">Failed</option>
                             <option value="refunded">Refunded</option>
                         </select>
 
@@ -289,6 +292,7 @@ export default function AdminPaymentsPage() {
                                         <th>Amount</th>
                                         <th>Method</th>
                                         <th>Payment Status</th>
+                                        <th>Razorpay IDs</th>
                                         <th>Payout Status</th>
                                         <th>Actions</th>
                                     </tr>
@@ -298,10 +302,18 @@ export default function AdminPaymentsPage() {
                                         <tr key={p._id}>
                                             <td style={{ fontFamily: "monospace", color: "var(--admin-text-sub)" }}>
                                                 #{p._id.toString().slice(-6)}
+                                                {p.bookingId && (
+                                                    <div style={{ fontSize: "10px", marginTop: "2px", opacity: 0.7 }}>
+                                                        Bk #{p.bookingId.toString?.().slice(-6) || ""}
+                                                    </div>
+                                                )}
                                             </td>
                                             <td>
                                                 <div style={{ fontWeight: "600", color: "var(--admin-text-main)" }}>
                                                     {p.customerId?.name || "Customer"}
+                                                </div>
+                                                <div style={{ fontSize: "11px", color: "var(--admin-text-sub)" }}>
+                                                    {p.customerId?.email || ""}
                                                 </div>
                                             </td>
                                             <td>
@@ -311,14 +323,35 @@ export default function AdminPaymentsPage() {
                                             </td>
                                             <td style={{ fontWeight: "700", color: "var(--admin-text-main)" }}>
                                                 ₹{p.amount}
+                                                {p.paidAt && (
+                                                    <div style={{ fontSize: "10px", fontWeight: "400", color: "var(--admin-text-sub)", marginTop: "2px" }}>
+                                                        {new Date(p.paidAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                                                    </div>
+                                                )}
                                             </td>
                                             <td style={{ textTransform: "uppercase", fontSize: "0.75rem", fontWeight: "600" }}>
-                                                {p.method}
+                                                {p.paymentProvider || p.method || "—"}
                                             </td>
                                             <td>
                                                 <span className={`status-pill ${p.status}`}>
                                                     {p.status}
                                                 </span>
+                                            </td>
+                                            <td style={{ fontFamily: "monospace", fontSize: "10px", maxWidth: "150px" }}>
+                                                {p.razorpayPaymentId ? (
+                                                    <div>
+                                                        <div style={{ color: "var(--admin-text-main)", fontWeight: "600", wordBreak: "break-all" }}>
+                                                            {p.razorpayPaymentId}
+                                                        </div>
+                                                        {p.razorpayOrderId && (
+                                                            <div style={{ color: "var(--admin-text-sub)", marginTop: "2px", wordBreak: "break-all" }}>
+                                                                {p.razorpayOrderId}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <span style={{ color: "var(--admin-text-sub)" }}>—</span>
+                                                )}
                                             </td>
                                             <td>
                                                 <span className={`status-pill ${p.payoutStatus || "pending"}`}>
@@ -327,7 +360,7 @@ export default function AdminPaymentsPage() {
                                             </td>
                                             <td>
                                                 <div style={{ display: "flex", gap: "6px" }}>
-                                                    {p.status === "completed" && p.refundStatus !== "processed" && (
+                                                    {(p.status === "paid" || p.status === "completed") && p.refundStatus !== "processed" && (
                                                         <button
                                                             className="btn-danger"
                                                             style={{ padding: "5px 10px", fontSize: "0.75rem" }}
@@ -336,7 +369,7 @@ export default function AdminPaymentsPage() {
                                                             Refund
                                                         </button>
                                                     )}
-                                                    {p.payoutStatus === "pending" && p.status === "completed" && (
+                                                    {p.payoutStatus === "pending" && (p.status === "paid" || p.status === "completed") && (
                                                         <button
                                                             className="btn-success"
                                                             style={{ padding: "5px 10px", fontSize: "0.75rem" }}
